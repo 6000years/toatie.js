@@ -92,11 +92,11 @@ const toatie = {
     )),
     joinedToggler
   )),
-  (toatie.pair = (evt1, evt2, el1, handler1, handler2, callerToggleObject = NO_TOGGLER, aELOptions1, aELOptions2) => (
+  (toatie.pair = (evt1, evt2, el1, handler1, handler2, callerToggleObject = NO_TOGGLER, aELOptions1, aELOptions2, initial_state1 = ON, initial_state2 = ON) => (
     (((callerToggleObject === NO_TOGGLER) || (callerToggleObject === RETURN_TOGGLER) || ((typeof callerToggleObject === 'object') && callerToggleObject)) || console.trace(`toatie.pair(): callerToggleObject must be either an Object or toatie.NO_TOGGLER or toatie.RETURN_TOGGLER`)),
     ((toggleObject1 = (callerToggleObject === NO_TOGGLER) ? NO_TOGGLER : {}, toggleObject2 = (callerToggleObject === NO_TOGGLER) ? NO_TOGGLER : {}) => (
-      toatie.event(evt1, el1, handler1, toggleObject1, aELOptions1),
-      toatie.event(evt2, el1, handler2, toggleObject2, aELOptions2),
+      toatie.event(evt1, el1, handler1, toggleObject1, aELOptions1, initial_state1),
+      toatie.event(evt2, el1, handler2, toggleObject2, aELOptions2, initial_state2),
       ((callerToggleObject === NO_TOGGLER)
         ? el1
         : (
