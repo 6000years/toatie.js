@@ -136,6 +136,8 @@ Joined togglers have more tricks:
 togglerThatIJoinedMyself.flipTo2nd();
 // toggles the second handler off and the first handler on
 togglerThatIJoinedMyself.flipTo1st();
+// flips to 2nd if we most recently flipped to 1st, or flips to 1st if we most recently flipped to 2nd handler
+togglerThatIJoinedMyself.flip();
 ```
 
 Maybe you want to delay the switch on (eg when doing css transitions):
