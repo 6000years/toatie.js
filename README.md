@@ -21,19 +21,21 @@ toatie.event('click', elmnt, () => console.log('clicked'));
 // define your own bindings:
 const click = toatie.event.bind(null, 'click');
 click(elmnt, () => console.log('clicked'));
+// toatie is a chainable API, so you can do this:
+document.body.append(click(elmnt, handler));
 ```
 
-Same, but demonstrates a toggler. `toggler.on()` calls [addEventListener()](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener), `toggler.off()` calls [removeEventListener()](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener).
+Same, but demonstrates a toggler:
 ```javascript
 const myFirstToggler = click(
   elmnt,
   () => console.log('clicked'),
-  toatie.RETURN_TOGGLER    // alternatively toatie.NO_TOGGLER (the default) in which case elmnt is returned
+  toatie.RETURN_TOGGLER    // default is NO_TOGGLER (in which case elmnt is returned)
 );
 myFirstToggler.off();    // calls removeEventListener()
 myFirstToggler.on();     // calls addEventListener()
 myFirstToggler.toggle(); // calls removeEventListener()
-myFirstToggler.runIfToggledOn() // does nothing (that is, does not run the handler function)
+myFirstToggler.runIfToggledOn() // does nothing
 myFirstToggler.toggle();        // calls addEventListener()
 myFirstToggler.runIfToggledOn() // runs the handler directly (not as a result of a user event firing)
 ```
@@ -65,20 +67,16 @@ click(
 console.log(togglerThatIMadeMyself.myproperty); // logs 'whatever'
 ```
 
-Same, but adds an element to the DOM and demonstrates use of toatie.bind1() which allows toatie to preserve the correct target element reference - should the caller fumble the reference, or should they not wish to keep a reference at all - and make it available in the handler function:
+Demonstrates the use of toatie.bind1() which allows toatie to preserve the correct target element reference - should the caller fumble the reference, or should they not wish to keep a reference at all - and make it available in the handler function:
 ```javascript
-const elmnt = document.createElement('button');
-document.body.append(
-  click(
-    ...toatie.bind1(
-      elmnt,
-      (el, e) => console.log(`clicked element %O, event object %O`, el, e)
-    )
+click(
+  ...toatie.bind1(
+    elmnt,
+    (el, e) => console.log(`clicked element %O, event object %O`, el, e)
   )
 );
 // it won't matter if the elmnt reference is changed or set to null because the argument el to the event handler has been bound and will be preserved
-elmnt = null; // safe
-// or
+elmnt = null;                     // safe
 elmnt = document.createElement(); // safe
 ```
 
@@ -138,8 +136,10 @@ toatie.pair() joins two togglers together using toatie.joinTogglers().  You can 
 const togglerThatIJoinedMyself = {};
 toatie.joinTogglers(
   togglerThatIJoinedMyself,
-  toatie.event('scroll', elmnt, handler, toatie.RETURN_TOGGLER),
-  toatie.event('load', imageElmnt, handler, toatie.RETURN_TOGGLER)
+  toatie.event('scroll', elmnt, handler1, toatie.RETURN_TOGGLER),
+  toatie.event('load', imageElmnt, handler2, toatie.RETURN_TOGGLER),
+  toatie.event('mousemove', document.body, handler3, toatie.RETURN_TOGGLER)
+  // ... add as many toatie.events as you like ...
 );
 togglerThatIJoinedMyself.off();
 ```
