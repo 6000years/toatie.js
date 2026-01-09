@@ -34,9 +34,9 @@ const myFirstToggler = click(
 );
 // toatie.OFF means that there has been no call to addEventListener() as yet
 mypromise
-  .then(myFirstToggler.on) // this calls addEventListener()
+  .then(myFirstToggler.on)      // this calls addEventListener()
   .then(() => dostuff())
-  .finally(myFirstToggler.off);
+  .finally(myFirstToggler.off); // calls removeEventListener()
 // there's also myFirstToggler.toggle() which switches the handler off if it is currently on, or on if it is currently off
 // and myFirstToggler.runIfToggledOn() which runs the handler if and only if the toggler is currently switched on
 ```
