@@ -32,9 +32,9 @@ const myFirstToggler = click(
   {},                    // addEventListener options (`once`, `passive`, `useCapture`, `signal`)
   toatie.OFF             // initial state
 );
-// there has been no call to addEventListener() as yet; won't happen until myFirstToggler.on() is called (2 lines down, after mypromise resolves)
+// toatie.OFF means that there has been no call to addEventListener() as yet
 mypromise
-  .then(myFirstToggler.on)
+  .then(myFirstToggler.on) // this calls addEventListener()
   .then(() => dostuff())
   .finally(myFirstToggler.off);
 // there's also myFirstToggler.toggle() which switches the handler off if it is currently on, or on if it is currently off
