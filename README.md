@@ -23,9 +23,24 @@ const click = toatie.event.bind(null, 'click');
 click(elmnt, () => console.log('clicked'));
 ```
 
-Same, but demonstrates a toggler and initial state `toatie.OFF`. `toggler.on()` calls [addEventListener()](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener), `toggler.off()` calls [removeEventListener()](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener).
+Same, but demonstrates a toggler. `toggler.on()` calls [addEventListener()](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener), `toggler.off()` calls [removeEventListener()](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener).
 ```javascript
 const myFirstToggler = click(
+  elmnt,
+  () => console.log('clicked'),
+  toatie.RETURN_TOGGLER    // alternatively toatie.NO_TOGGLER (the default) in which case elmnt is returned
+);
+myFirstToggler.off();    // calls removeEventListener()
+myFirstToggler.on();     // calls addEventListener()
+myFirstToggler.toggle(); // calls removeEventListener()
+myFirstToggler.runIfToggledOn() // does nothing (that is, does not run the handler function)
+myFirstToggler.toggle();        // calls addEventListener()
+myFirstToggler.runIfToggledOn() // runs the handler directly (not as a result of a user event firing)
+```
+
+Same, but demonstrates initial state `toatie.OFF`:
+```javascript
+const mySecondToggler = click(
   elmnt,
   () => console.log('clicked'),
   toatie.RETURN_TOGGLER, // alternatively toatie.NO_TOGGLER (the default) in which case elmnt is returned
@@ -34,11 +49,9 @@ const myFirstToggler = click(
 );
 // toatie.OFF means that there has been no call to addEventListener() as yet
 mypromise
-  .then(myFirstToggler.on)      // this calls addEventListener()
+  .then(mySecondToggler.on)
   .then(() => dostuff())
-  .finally(myFirstToggler.off); // calls removeEventListener()
-// there's also myFirstToggler.toggle() which switches the handler off if it is currently on, or on if it is currently off
-// and myFirstToggler.runIfToggledOn() which runs the handler if and only if the toggler is currently switched on
+  .finally(mySecondToggler.off);
 ```
 
 Same, but caller owns and controls the toggler right from the beginning:
