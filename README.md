@@ -18,7 +18,8 @@ Trivial use, same as addEventListener():
 ```javascript
 const elmnt = document.createElement();
 const handler = () => console.log('clicked');
-toatie.event('click', elmnt, handler);
+
+toatie.event('click', elmnt, handler); // calls addEventListener()
 
 // you can define your own bindings:
 const click = toatie.event.bind(null, 'click');
@@ -69,7 +70,7 @@ click(
 console.log(togglerThatIMadeMyself.myproperty); // logs 'whatever'
 ```
 
-Demonstrates the use of toatie.bind1() which allows toatie to preserve the correct target element reference - should the caller fumble the reference, or should they not wish to keep a reference at all - and make it available in the handler function:
+Demonstrates the use of `toatie.bind1()` which allows toatie to preserve the correct target element reference - should the caller fumble the reference, or should they not wish to keep a reference at all - and make it available in the handler function:
 ```javascript
 click(
   ...toatie.bind1(
@@ -116,7 +117,7 @@ toatie.mouseovers(
 );
 ```
 
-There's also toatie.mouseenters() and toatie.focusblur().  You can define your own bindings:
+There's also `toatie.mouseenters()` and `toatie.focusblur()`.  You can define your own bindings:
 ```javascript
 const keydownkeyup = toatie.pair.bind(null, 'keydown', 'keyup');
 keydownkeyup(elmnt, () => console.log('keydown'), () => console.log('keyup'));
@@ -133,7 +134,7 @@ const myCombinedToggler = toatie.mouseovers(
 myCombinedToggler.off(); // calls removeEventListener() for both handlers
 ```
 
-toatie.pair() joins two togglers together using toatie.joinTogglers().  You can use it too:
+`toatie.pair()` joins two togglers together using `toatie.joinTogglers()`.  You can use it too:
 ```javascript
 const togglerThatIJoinedMyself = {};
 toatie.joinTogglers(
@@ -164,7 +165,7 @@ togglerThatIJoinedMyself.flipTo2nd(250);
 togglerThatIJoinedMyself.flipTo1st(mypromise);
 ```
 
-Togglers can be combined arbitrarily.  That's what you need when you're writing a complex javascript application which needs to do mode switches.
+Togglers can be combined arbitrarily.  That's what you need when you're writing a complex javascript application that does mode switches.
 ```javascript
 const div = document.createElement('div');
 div.style.setProperty('width', '100px');
