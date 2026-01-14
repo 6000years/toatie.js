@@ -16,10 +16,10 @@ Open source, except for the words `toatie` and `wee` which are the exclusive pro
 
 Trivial use, same as addEventListener():
 ```javascript
-const elmnt = document.createElement();
-const handler = () => console.log('clicked');
+const elmnt = document.createElement(); // or getElementById() or other methods
+const handler = e => console.log(e.type);
 
-toatie.event('click', elmnt, handler); // calls addEventListener()
+toatie.event('mousedown', elmnt, handler); // calls addEventListener()
 
 // you can define your own bindings:
 const click = toatie.event.bind(null, 'click');
