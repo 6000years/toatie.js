@@ -17,19 +17,21 @@ Open source, except for the words `toatie` and `wee` which are the exclusive pro
 Trivial use, same as addEventListener():
 ```javascript
 const elmnt = document.createElement();
-toatie.event('click', elmnt, () => console.log('clicked'));
-// define your own bindings:
+const handler = () => console.log('clicked');
+toatie.event('click', elmnt, handler);
+
+// you can define your own bindings:
 const click = toatie.event.bind(null, 'click');
-click(elmnt, () => console.log('clicked'));
-// toatie is a chainable API, so you can do this:
-document.body.append(click(elmnt, handler));
+click(elmnt, handler);
+
+document.body.append(click(elmnt, handler)); // chainable API
 ```
 
 Same, but demonstrates a toggler:
 ```javascript
 const myFirstToggler = click(
   elmnt,
-  () => console.log('clicked'),
+  handler,
   toatie.RETURN_TOGGLER    // default is NO_TOGGLER (in which case elmnt is returned)
 );
 myFirstToggler.off();    // calls removeEventListener()
@@ -44,7 +46,7 @@ Same, but demonstrates initial state `toatie.OFF`:
 ```javascript
 const mySecondToggler = click(
   elmnt,
-  () => console.log('clicked'),
+  handler,
   toatie.RETURN_TOGGLER, // alternatively toatie.NO_TOGGLER (the default) in which case elmnt is returned
   {},                    // addEventListener options (`once`, `passive`, `useCapture`, `signal`)
   toatie.OFF             // initial state
@@ -61,7 +63,7 @@ Same, but caller owns and controls the toggler right from the beginning:
 const togglerThatIMadeMyself = { myproperty: 'whatever' };
 click(
   elmnt,
-  () => console.log('clicked'),
+  handler,
   togglerThatIMadeMyself
 ); // returns elmnt
 console.log(togglerThatIMadeMyself.myproperty); // logs 'whatever'
@@ -98,8 +100,8 @@ click(
 You can sign up for callbacks when your handler is switched on or off:
 ```javascript
 const handler = () => console.log('clicked');
-handler.onCb  = () => console.log("toatie just called addEventListener('click', elmnt, handler)");
-handler.offCb = () => console.log("toatie just called removeEventListener('click', elmnt, handler)");
+handler.onCb  = () => console.log("toatie just called addEventListener()");
+handler.offCb = () => console.log("toatie just called removeEventListener()");
 click(elmnt, handler); // logs "toatie just called addEventListener('click', elmnt, handler)"
 ```
 
