@@ -21,11 +21,10 @@ const handler = e => console.log(e.type);
 
 toatie.event('mousedown', elmnt, handler); // calls addEventListener()
 
-// you can define your own bindings:
-const click = toatie.event.bind(null, 'click');
+const click = toatie.event.bind(null, 'click'); // define your own bindings
 click(elmnt, handler);
 
-document.body.append(click(elmnt, handler)); // chainable API
+document.body.append(click(elmnt, handler)); // composable API
 ```
 
 Same, but demonstrates a toggler:
