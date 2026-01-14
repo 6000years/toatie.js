@@ -33,7 +33,7 @@ Same, but demonstrates a toggler:
 const myFirstToggler = click(
   elmnt,
   handler,
-  toatie.RETURN_TOGGLER    // default is NO_TOGGLER (in which case elmnt is returned)
+  toatie.RETURN_TOGGLER
 );
 myFirstToggler.off();    // calls removeEventListener()
 myFirstToggler.on();     // calls addEventListener()
@@ -48,8 +48,8 @@ Same, but demonstrates initial state `toatie.OFF`:
 const mySecondToggler = click(
   elmnt,
   handler,
-  toatie.RETURN_TOGGLER, // alternatively toatie.NO_TOGGLER (the default) in which case elmnt is returned
-  {},                    // addEventListener options (`once`, `passive`, `useCapture`, `signal`)
+  toatie.RETURN_TOGGLER, // alternatively NO_TOGGLER (the default) in which case elmnt is returned
+  {},                    // addEventListener options (once, passive, useCapture, signal)
   toatie.OFF             // initial state
 );
 // toatie.OFF means that there has been no call to addEventListener() as yet
@@ -78,7 +78,8 @@ click(
     (el, e) => console.log(`clicked element %O, event object %O`, el, e)
   )
 );
-// it won't matter if the elmnt reference is changed or set to null because the argument el to the event handler has been bound and will be preserved
+// it won't matter if the elmnt reference is changed or set to null
+// because the argument el to the event handler has been bound and will be preserved
 elmnt = null;                     // safe
 elmnt = document.createElement(); // safe
 ```
@@ -103,7 +104,7 @@ You can sign up for callbacks when your handler is switched on or off:
 const handler = () => console.log('clicked');
 handler.onCb  = () => console.log("toatie just called addEventListener()");
 handler.offCb = () => console.log("toatie just called removeEventListener()");
-click(elmnt, handler); // logs "toatie just called addEventListener('click', elmnt, handler)"
+click(elmnt, handler); // logs "toatie just called addEventListener()"
 ```
 
 Events sometimes come in pairs.  Here mouseover events turn the background colour red and mouseout events reset it:
@@ -120,7 +121,11 @@ toatie.mouseovers(
 There's also `toatie.mouseenters()` and `toatie.focusblur()`.  You can define your own bindings:
 ```javascript
 const keydownkeyup = toatie.pair.bind(null, 'keydown', 'keyup');
-keydownkeyup(elmnt, () => console.log('keydown'), () => console.log('keyup'));
+keydownkeyup(
+  elmnt,
+  () => console.log('keydown'),
+  () => console.log('keyup')
+);
 ```
 
 Toggle both event handlers in one fell swoop:
@@ -153,15 +158,16 @@ Joined togglers have more tricks:
 togglerThatIJoinedMyself.flipTo2nd();
 // toggles the second handler off and the first handler on
 togglerThatIJoinedMyself.flipTo1st();
-// flips to 2nd if we most recently flipped to 1st, or flips to 1st if we most recently flipped to 2nd handler
+// flips to 2nd if we most recently flipped to 1st
+// or flips to 1st if we most recently flipped to 2nd handler
 togglerThatIJoinedMyself.flip();
 ```
 
 Maybe you want to delay the switch on (eg when doing css transitions):
 ```javascript
-// toggles the first handler off immediately and the second handler on after 250 milliseconds
+// toggles first handler off immediately and the second handler on after 250 milliseconds
 togglerThatIJoinedMyself.flipTo2nd(250);
-// toggles the second handler off immediately and the first handler on after mypromise resolves
+// toggles second handler off immediately and the first handler on after mypromise resolves
 togglerThatIJoinedMyself.flipTo1st(mypromise);
 ```
 
@@ -199,6 +205,8 @@ toatie.joinTogglers(combinedToggler, mouseovers_toggler, mousemove_and_keyup, li
 
 const checkbox = document.createElement('input');
 checkbox.setAttribute('type', 'checkbox');
+
+// The mode switch happens here:
 toatie.event('change', checkbox, combinedToggler.toggle);
 
 document.body.append(div, checkbox);
