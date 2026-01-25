@@ -16,7 +16,7 @@ const toatie = {
       (toggleObject === NO_TOGGLER)
       || (toggleObject === RETURN_TOGGLER)
       // null_has_type_'object',_hence_the_additional_test_for_truthiness
-      || ((typeof toggleObject === 'object') && toggleObject && ( ! ('capture' in toggleObject)) && ( ! ('once' in toggleObject)))
+      || ((typeof toggleObject === 'object') && toggleObject)
     )
       || console.trace(`toatie.event(): toggleObject must be either an Object or toatie.NO_TOGGLER or toatie.RETURN_TOGGLER`)
     ),
