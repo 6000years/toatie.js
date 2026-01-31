@@ -34,7 +34,7 @@ const myFirstToggler = click(
   handler,
   toatie.RETURN_TOGGLER
 );
-myFirstToggler.off();    // calls removeEventListener()
+myFirstToggler.off();    // calls elmnt.removeEventListener('click', handler)
 myFirstToggler.on();     // calls addEventListener()
 myFirstToggler.toggle(); // calls removeEventListener()
 myFirstToggler.runIfToggledOn() // does nothing
