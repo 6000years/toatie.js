@@ -4,9 +4,7 @@ a toatie wee javascript event handling library providing higher concept wrapper 
 
 ## Installation
 
-None as such, it's just a single javascript file.
-
-Add to a web page using <script src="toatie.js"></script>.
+It's just a single javascript file. Add to a web page using <script src="toatie.js"></script>.
 
 ## License
 
