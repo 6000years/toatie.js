@@ -42,7 +42,7 @@ toggler.runIfToggledOn() // runs the handler directly (not as a result of a user
 
 Same, but demonstrates initial state `toatie.OFF`:
 ```javascript
-const mySecondToggler = click(
+const toggler = click(
   elmnt,
   handler,
   toatie.RETURN_TOGGLER, // alternatively NO_TOGGLER (the default) in which case elmnt is returned
@@ -51,20 +51,20 @@ const mySecondToggler = click(
 );
 // toatie.OFF means that there has been no call to addEventListener() as yet
 mypromise
-  .then(mySecondToggler.on)
+  .then(toggler.on)
   .then(() => dostuff())
-  .finally(mySecondToggler.off);
+  .finally(toggler.off);
 ```
 
 Same, but caller owns and controls the toggler right from the beginning:
 ```javascript
-const togglerThatIMadeMyself = { myproperty: 'whatever' };
+const toggler = { myproperty: 'whatever' };
 click(
   elmnt,
   handler,
-  togglerThatIMadeMyself
+  toggler
 ); // returns elmnt
-console.log(togglerThatIMadeMyself.myproperty); // logs 'whatever'
+console.log(toggler.myproperty); // logs 'whatever'
 ```
 
 Demonstrates the use of `toatie.bind1()` which allows toatie to preserve the correct target element reference - should the caller fumble the reference, or should they not wish to keep a reference at all - and make it available in the handler function:
@@ -138,34 +138,34 @@ myCombinedToggler.off(); // calls removeEventListener() for both handlers
 
 `toatie.pair()` joins two togglers together using `toatie.joinTogglers()`.  You can use it too:
 ```javascript
-const togglerThatIJoinedMyself = {};
+const toggler = {};
 toatie.joinTogglers(
-  togglerThatIJoinedMyself,
+  toggler,
   toatie.event('scroll', elmnt, handler1, toatie.RETURN_TOGGLER),
   toatie.event('load', imageElmnt, handler2, toatie.RETURN_TOGGLER),
   toatie.event('mousemove', document.body, handler3, toatie.RETURN_TOGGLER)
   // ... add as many toatie.events as you like ...
 );
-togglerThatIJoinedMyself.off();
+toggler.off();
 ```
 
 Joined togglers have more tricks:
 ```javascript
 // toggles the first handler off and the second handler on
-togglerThatIJoinedMyself.flipTo2nd();
+toggler.flipTo2nd();
 // toggles the second handler off and the first handler on
-togglerThatIJoinedMyself.flipTo1st();
+toggler.flipTo1st();
 // flips to 2nd if we most recently flipped to 1st
 // or flips to 1st if we most recently flipped to 2nd handler
-togglerThatIJoinedMyself.flip();
+toggler.flip();
 ```
 
 Maybe you want to delay the switch on (eg when doing css transitions):
 ```javascript
 // toggles first handler off immediately and the second handler on after 250 milliseconds
-togglerThatIJoinedMyself.flipTo2nd(250);
+toggler.flipTo2nd(250);
 // toggles second handler off immediately and the first handler on after mypromise resolves
-togglerThatIJoinedMyself.flipTo1st(mypromise);
+toggler.flipTo1st(mypromise);
 ```
 
 Togglers can be combined arbitrarily.  That's what you need when you're writing a complex javascript application that does mode switches.
