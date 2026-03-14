@@ -27,17 +27,17 @@ document.body.append(click(elmnt, handler)); // composable API
 
 Same, but demonstrates a toggler:
 ```javascript
-const myFirstToggler = click(
+const toggler = click(
   elmnt,
   handler,
   toatie.RETURN_TOGGLER
 );
-myFirstToggler.off();    // calls elmnt.removeEventListener('click', handler)
-myFirstToggler.on();     // calls addEventListener()
-myFirstToggler.toggle(); // calls removeEventListener()
-myFirstToggler.runIfToggledOn() // does nothing
-myFirstToggler.toggle();        // calls addEventListener()
-myFirstToggler.runIfToggledOn() // runs the handler directly (not as a result of a user event firing)
+toggler.off();    // calls elmnt.removeEventListener('click', handler)
+toggler.on();     // calls addEventListener()
+toggler.toggle(); // calls removeEventListener()
+toggler.runIfToggledOn() // does nothing
+toggler.toggle();        // calls addEventListener()
+toggler.runIfToggledOn() // runs the handler directly (not as a result of a user event firing)
 ```
 
 Same, but demonstrates initial state `toatie.OFF`:
