@@ -127,13 +127,13 @@ keydownkeyup(
 
 Toggle both event handlers in one fell swoop:
 ```javascript
-const myCombinedToggler = toatie.mouseovers(
+const toggler = toatie.mouseovers(
   elmnt,
   () => console.log('mouseover'),
   () => console.log('mouseout'),
   toatie.RETURN_TOGGLER
 );
-myCombinedToggler.off(); // calls removeEventListener() for both handlers
+toggler.off(); // calls removeEventListener() for both handlers
 ```
 
 `toatie.pair()` joins two togglers together using `toatie.joinTogglers()`.  You can use it too:
