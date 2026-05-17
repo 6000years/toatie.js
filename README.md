@@ -1,10 +1,10 @@
 # Toatie Js
 
-a toatie wee javascript event handling library providing higher concept wrapper functions over addEventListener() for complex javascript applications
+A toatie wee javascript event handling library providing higher concept wrapper functions over addEventListener(). Intended for complex javascript applications.
 
 ## Installation
 
-Add to a web page using <script src="toatie.js"></script>.
+No dependencies, no configuration, zero complexity. Add to a web page using <script src="toatie.js"></script>.
 
 ## License
 
@@ -12,15 +12,18 @@ Open source, except for the words `toatie` and `wee` which are the exclusive pro
 
 ## Usage
 
-Trivial use, same as addEventListener():
+Trivial use:
 ```javascript
-const elmnt = document.createElement(); // or getElementById() or other methods
-const handler = e => console.log(e.type);
+// wrap addEventListener()
+toatie.event('mousedown', elmnt, handler);
+// where elmnt comes (typically) from getElementById() or document.createElement()
+// and handler is an event handler function, eg e => console.log(e.type)
 
-toatie.event('mousedown', elmnt, handler); // calls addEventListener()
-
-const click = toatie.event.bind(null, 'click'); // define your own bindings
+// for convenience you may wish to define your own bindings:
+const click = toatie.event.bind(null, 'click');
+// then write
 click(elmnt, handler);
+// instead of elmnt.addEventListener('click', handler)
 
 document.body.append(click(elmnt, handler)); // composable API
 ```
@@ -67,7 +70,7 @@ click(
 console.log(toggler.myproperty); // logs 'whatever'
 ```
 
-Demonstrates the use of `toatie.bind1()` which allows toatie to preserve the correct target element reference - should the caller fumble the reference, or should they not wish to keep a reference at all - and make it available in the handler function:
+Demonstrates the use of `toatie.bind1()` which allows toatie to preserve the correct target element reference (should the caller fumble the reference, or should they not wish to keep a reference at all) and make it available in the handler function:
 ```javascript
 click(
   ...toatie.bind1(
