@@ -15,7 +15,7 @@ Open source, except for the words `toatie` and `wee` which are the exclusive pro
 Trivial use:
 ```javascript
 // wrap addEventListener()
-toatie.event('mousedown', elmnt, handler);
+toatie.event('click', elmnt, handler);
 // where elmnt comes (typically) from getElementById() or document.createElement()
 // and handler is an event handler function, eg e => console.log(e.type)
 
@@ -33,7 +33,7 @@ Same, but demonstrates a toggler:
 const toggler = click(
   elmnt,
   handler,
-  toatie.RETURN_TOGGLER
+  toatie.RETURN_TOGGLER // returns elmnt by default
 );
 toggler.off();    // calls elmnt.removeEventListener('click', handler)
 toggler.on();     // calls addEventListener()
@@ -66,7 +66,7 @@ click(
   elmnt,
   handler,
   toggler
-); // returns elmnt
+);
 console.log(toggler.myproperty); // logs 'whatever'
 ```
 
@@ -80,8 +80,8 @@ click(
 );
 // it won't matter if the elmnt reference is changed or set to null
 // because the argument el to the event handler has been bound and will be preserved
-elmnt = null;                     // safe
-elmnt = document.createElement(); // safe
+elmnt = null;                     // does not break the click handler
+elmnt = document.createElement(); // does not break the click handler
 ```
 
 toatie.bind1() clobbers your handler function's `this` reference. If you want to preserve your `this` then:
