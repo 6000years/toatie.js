@@ -25,7 +25,8 @@ const click = toatie.event.bind(null, 'click');
 click(elmnt, handler);
 // instead of elmnt.addEventListener('click', handler)
 
-document.body.append(click(elmnt, handler)); // composable API
+// and it's a composable API:
+document.body.append(click(elmnt, handler));
 ```
 
 Same, but demonstrates a toggler:
