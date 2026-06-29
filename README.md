@@ -21,7 +21,7 @@ toatie.event('click', elmnt, handler);
 
 // for convenience you may wish to define your own bindings:
 const click = toatie.event.bind(null, 'click');
-// then write
+// then
 click(elmnt, handler);
 // instead of elmnt.addEventListener('click', handler)
 
