@@ -180,16 +180,16 @@ const modeFlipTheButtons = joinTogglers(
   ((hurryUpFn = () => (window.lowUrgencyLoading = false)) => (
     joinTogglers(
       {},
-      onClick(loadButton, hurryUpFn, RETURN_TOGGLER),
-      onClick(reduceButton, hurryUpFn, RETURN_TOGGLER),
-      onClick(loadAndReduceButton, hurryUpFn, RETURN_TOGGLER)
+      click(loadButton, hurryUpFn, RETURN_TOGGLER),
+      click(reduceButton, hurryUpFn, RETURN_TOGGLER),
+      click(loadAndReduceButton, hurryUpFn, RETURN_TOGGLER)
     )
   ))(),
   joinTogglers(
     null,
     click(loadButton, loadNewItems, RETURN_TOGGLER, null, OFF),
-    onClick(reduceButton, reduce, RETURN_TOGGLER, null, OFF),
-    onClick(loadAndReduceButton, () => (loadNewItems(), reduce()), RETURN_TOGGLER, null, OFF)
+    click(reduceButton, reduce, RETURN_TOGGLER, null, OFF),
+    click(loadAndReduceButton, () => (loadNewItems(), reduce()), RETURN_TOGGLER, null, OFF)
   )
 );
 loadStartupData().then(modeFlipTheButtons.flipTo2nd);
