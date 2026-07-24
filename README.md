@@ -25,7 +25,7 @@ const click = toatie.event.bind(null, 'click');
 click(elmnt, handler);
 // instead of elmnt.addEventListener('click', handler)
 
-// and it's a composable API:
+// bonus - it's a composable API:
 document.body.append(click(elmnt, handler));
 ```
 
@@ -175,41 +175,22 @@ toggler.flipTo1st(mypromise);
 
 Togglers can be combined arbitrarily.  That's what you need when you're writing a complex javascript application that does mode switches.
 ```javascript
-const div = document.createElement('div');
-div.style.setProperty('width', '100px');
-div.style.setProperty('height', '100px');
-div.style.setProperty('border', '2px solid Crimson');
-const mouseovers_toggler = toatie.mouseovers(...toatie.bind1(div, el => el.style.setProperty('background-color', 'pink'), el => el.style.removeProperty('background-color')), toatie.RETURN_TOGGLER);
-
-// joinTogglers() always returns the joined toggler
-const mousemove_and_keyup = toatie.joinTogglers(
-  {},
-  toatie.event('keyup', document.body, e => console.log(e.key), toatie.RETURN_TOGGLER),
-  toatie.event('mousemove', document.body, e => console.log(e.movementX), toatie.RETURN_TOGGLER)
+const modeFlipTheButtons = joinTogglers(
+  null,
+  ((hurryUpFn = () => (window.lowUrgencyLoading = false)) => (
+    joinTogglers(
+      {},
+      onClick(loadButton, hurryUpFn, RETURN_TOGGLER),
+      onClick(reduceButton, hurryUpFn, RETURN_TOGGLER),
+      onClick(loadAndReduceButton, hurryUpFn, RETURN_TOGGLER)
+    )
+  ))(),
+  joinTogglers(
+    null,
+    click(loadButton, loadNewItems, RETURN_TOGGLER, null, OFF),
+    onClick(reduceButton, reduce, RETURN_TOGGLER, null, OFF),
+    onClick(loadAndReduceButton, () => (loadNewItems(), reduce()), RETURN_TOGGLER, null, OFF)
+  )
 );
-
-const ul = document.createElement('ul');
-document.body.append(ul);
-const liCombinedToggler = {};
-toatie.joinTogglers(
-  liCombinedToggler,
-  ...Array(3).fill().map((_, ind) => (
-    ((li = document.createElement('li')) => (
-      li.append(`line item ${ind}`),
-      ul.append(li),
-      toatie.mouseovers(li, () => console.log(`mouseover ${ind}`), () => console.log(`mouseout ${ind}`), toatie.RETURN_TOGGLER)
-    ))()
-  ))
-);
-
-const combinedToggler = {};
-toatie.joinTogglers(combinedToggler, mouseovers_toggler, mousemove_and_keyup, liCombinedToggler);
-
-const checkbox = document.createElement('input');
-checkbox.setAttribute('type', 'checkbox');
-
-// The mode switch happens here:
-toatie.event('change', checkbox, combinedToggler.toggle);
-
-document.body.append(div, checkbox);
+loadStartupData().then(modeFlipTheButtons.flipTo2nd);
 ```
