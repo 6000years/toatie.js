@@ -62,7 +62,7 @@ mypromise
 
 Same, but caller owns and controls the toggler right from the beginning:
 ```javascript
-const toggler = { myproperty: 'whatever' };
+const toggler = { myproperty: 'whatever' }; // alternatively toatie.dummy() returns a do-nothing toggler object
 click(
   elmnt,
   handler,
@@ -106,6 +106,7 @@ const handler = () => console.log('clicked');
 handler.onCb  = () => console.log("toatie just called addEventListener()");
 handler.offCb = () => console.log("toatie just called removeEventListener()");
 click(elmnt, handler); // logs "toatie just called addEventListener()"
+click(elmnt, handler, toatie.NO_TOGGLER, null, toatie.OFF); // logs nothing
 ```
 
 Events sometimes come in pairs.  Here mouseover events turn the background colour red and mouseout events reset it:
