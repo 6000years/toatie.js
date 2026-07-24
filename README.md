@@ -1,14 +1,14 @@
 # Toatie Js
 
-A toatie wee javascript event handling library providing higher concept wrapper functions over addEventListener(). Intended for complex javascript applications.
+A toatie wee javascript event handling library providing higher concept wrapper functions over addEventListener() for complex javascript applications.
 
 ## Installation
 
-No dependencies, no configuration, zero complexity. Add to a web page using <script src="toatie.js"></script>.
+No dependencies, no configuration, no complexity. Add to a web page using <script src="toatie.js"></script>.
 
 ## License
 
-Open source, except for the words `toatie` and `wee` which are the exclusive property of the nation of Scotland.
+Open source except for the words `toatie` and `wee` which are the exclusive property of the nation of Scotland.
 
 ## Usage
 
@@ -39,9 +39,9 @@ const toggler = click(
 toggler.off();    // calls elmnt.removeEventListener('click', handler)
 toggler.on();     // calls addEventListener()
 toggler.toggle(); // calls removeEventListener()
-toggler.runIfToggledOn() // does nothing
+toggler.run?.() // undefined, does nothing
 toggler.toggle();        // calls addEventListener()
-toggler.runIfToggledOn() // runs the handler directly (not as a result of a user event firing)
+toggler.run?.() // runs the handler directly (not as a result of a user event firing)
 ```
 
 Same, but demonstrates initial state `toatie.OFF`:
