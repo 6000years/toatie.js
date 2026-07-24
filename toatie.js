@@ -1,6 +1,12 @@
 'use strict';
 
 const toatie = {
+  dummy: (clue1 = 'dummy switched on', clue2 = 'dummy switched off') => ({
+    on:  () => console.debug(clue1),
+    off: () => console.debug(clue2),
+    toggle:  () => false,
+    handler: () => false
+  }),
   NO_TOGGLER:     Symbol('NO_TOGGLER'),
   RETURN_TOGGLER: Symbol('RETURN_TOGGLER'),
   ON:             Symbol('HANDLER_IS_ON'),
@@ -26,14 +32,14 @@ const toatie = {
       on1 = () => (
         elmnt.addEventListener(eventType, handler, aELOptions),
         (toggleObject && (toggleObject.toggle = off1)),
-        (toggleObject && (toggleObject.runIfToggledOn = handler)),
+        (toggleObject && (toggleObject.run = handler)),
         handler.onCb?.(),
         toggleObject
       ),
       off1 = () => (
         elmnt.removeEventListener(eventType, handler, aELOptions),
         (toggleObject && (toggleObject.toggle = on1)),
-        (toggleObject && (toggleObject.runIfToggledOn = notSwitchedOn)),
+        (toggleObject && (toggleObject.run = notSwitchedOn)),
         handler.offCb?.(),
         toggleObject
       )
@@ -46,8 +52,8 @@ const toatie = {
           (toggleObject.off = off1),
           (toggleObject.handler = handler),
           ((initial_state === OFF)
-            ? ((toggleObject.toggle = on1),  (toggleObject.runIfToggledOn = notSwitchedOn))
-            : ((toggleObject.toggle = off1), (toggleObject.runIfToggledOn = handler))
+            ? ((toggleObject.toggle = on1),  (toggleObject.run = notSwitchedOn))
+            : ((toggleObject.toggle = off1), (toggleObject.run = handler))
           )
         )
       ),
