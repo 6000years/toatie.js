@@ -13,76 +13,23 @@ const toatie = {
   OFF:            Symbol('HANDLER_IS_OFF')
 };
 
-(({RETURN_TOGGLER, ON, NO_TOGGLER, OFF} = toatie) => (
-  (toatie.bind  = (el1, thisref, ...handlers) => [el1, ...handlers.map(h => h.bind(thisref, el1))]),
-  (toatie.bind1 = (el1,          ...handlers) => [el1, ...handlers.map(h => h.bind(null, el1))]),
-  (toatie.event = (eventType, elmnt, handler, toggleObject = NO_TOGGLER, aELOptions, initial_state = ON) => (
-    ([ON, OFF].includes(initial_state) || console.trace(`6th argument to toatie.event() must be either toatie.ON or toatie.OFF`)),
-    ((
-      (toggleObject === NO_TOGGLER)
-      || (toggleObject === RETURN_TOGGLER)
-      // null_has_type_'object',_hence_the_additional_test_for_truthiness
-      || ((typeof toggleObject === 'object') && toggleObject)
-    )
-      || console.trace(`toatie.event(): toggleObject must be either an Object or toatie.NO_TOGGLER or toatie.RETURN_TOGGLER`)
-    ),
-    ((
-      wantTogglerReturn = (toggleObject === RETURN_TOGGLER),
-      notSwitchedOn = () => console.warn(`Refuse to run ${handler} because it's not switched on`),
-      on1 = () => (
-        elmnt.addEventListener(eventType, handler, aELOptions),
-        (toggleObject && (toggleObject.toggle = off1)),
-        (toggleObject && (toggleObject.run = handler)),
-        handler.onCb?.(),
-        toggleObject
-      ),
-      off1 = () => (
-        elmnt.removeEventListener(eventType, handler, aELOptions),
-        (toggleObject && (toggleObject.toggle = on1)),
-        (toggleObject && (toggleObject.run = notSwitchedOn)),
-        handler.offCb?.(),
-        toggleObject
-      )
-    ) => (
-      ((toggleObject === NO_TOGGLER)
-        ? (toggleObject = null)
-        : (
-          ((toggleObject === RETURN_TOGGLER) && (toggleObject = {})),
-          (toggleObject.on  = on1),
-          (toggleObject.off = off1),
-          (toggleObject.handler = handler),
-          ((initial_state === OFF)
-            ? ((toggleObject.toggle = on1),  (toggleObject.run = notSwitchedOn))
-            : ((toggleObject.toggle = off1), (toggleObject.run = handler))
-          )
-        )
-      ),
-      ((initial_state === ON) && on1()),
-      (wantTogglerReturn ? toggleObject : elmnt)
-    ))()
-  )),
-  (toatie.joinTogglers = (joinedToggler, ...togglers) => (
-    ((joinedToggler === RETURN_TOGGLER) && console.warn('joinTogglers(): 1st argument joinedToggler must be an object, cannot be toatie.RETURN_TOGGLER')),
+((
+  {RETURN_TOGGLER, ON, NO_TOGGLER, OFF} = toatie,
+  join_togglers = (joinedToggler, ...togglers) => (
+    ((joinedToggler === RETURN_TOGGLER) && (joinedToggler = {})),
     (joinedToggler ??= {}),
     (joinedToggler.on  = () => (togglers.forEach(n => n.on()), joinedToggler)),
     (joinedToggler.off = () => (togglers.forEach(n => n.off()), joinedToggler)),
     (joinedToggler.toggle = () => (togglers.forEach(n => n.toggle()), joinedToggler)),
-    // if_you_use_delaySwitchOn_then_it_delays_switching_the_1st_handler_on_BUT_NOT_SWITCHING_THE_2ND_HANDLER_OFF
-    ((flipTo1st = (delaySwitchOn = 0) => (
-      ((delaySwitchOn instanceof Promise)
-        ? delaySwitchOn.then(togglers[0].on)
-        : (delaySwitchOn ? setTimeout(togglers[0].on, delaySwitchOn) : togglers[0].on())
-      ),
+    ((flipTo1st = () => (
+      togglers[0].on(),
       togglers[1].off(),
       (flip1 = flipTo2nd),
       joinedToggler
     ),
-      flipTo2nd = (delaySwitchOn = 0) => (
+      flipTo2nd = () => (
         togglers[0].off(),
-        ((delaySwitchOn instanceof Promise)
-          ? delaySwitchOn.then(togglers[1].on)
-          : (delaySwitchOn ? setTimeout(togglers[1].on, delaySwitchOn) : togglers[1].on())
-        ),
+        togglers[1].on(),
         (flip1 = flipTo1st),
         joinedToggler
       ),
@@ -97,23 +44,137 @@ const toatie = {
       (joinedToggler[`handler${ind}`] = n.handler)
     )),
     joinedToggler
-  )),
-  (toatie.pair = (evt1, evt2, el1, handler1, handler2, callerToggleObject = NO_TOGGLER, aELOptions1, aELOptions2, initial_state1 = ON, initial_state2 = ON) => (
-    (((callerToggleObject === NO_TOGGLER) || (callerToggleObject === RETURN_TOGGLER) || ((typeof callerToggleObject === 'object') && callerToggleObject)) || console.trace(`toatie.pair(): callerToggleObject must be either an Object or toatie.NO_TOGGLER or toatie.RETURN_TOGGLER`)),
-    ((toggleObject1 = (callerToggleObject === NO_TOGGLER) ? NO_TOGGLER : {}, toggleObject2 = (callerToggleObject === NO_TOGGLER) ? NO_TOGGLER : {}) => (
-      toatie.event(evt1, el1, handler1, toggleObject1, aELOptions1, initial_state1),
-      toatie.event(evt2, el1, handler2, toggleObject2, aELOptions2, initial_state2),
-      ((callerToggleObject === NO_TOGGLER)
-        ? el1
+  ),
+  handle_event = (initialState, toggleObject, eventType, elmnt, handler, aELOptions, toatieOptions) => (
+    ((
+      (toggleObject === NO_TOGGLER)
+      || (toggleObject === RETURN_TOGGLER)
+      // null_has_type_'object',_hence_the_additional_test_for_truthiness
+      || ((typeof toggleObject === 'object') && toggleObject)
+    )
+      || console.trace(`toggleObject must be either an Object or toatie.NO_TOGGLER or toatie.RETURN_TOGGLER`)
+    ),
+    ((
+      toggle_object = toatieOptions?.toggleObject || toggleObject,
+      initial_state = toatieOptions?.initialState || initialState,
+      // do_not_be_tempted_to_inline_this_-_toggle_object_gets_reassigned_so_you_can't_reliably_run_this_test_later_on
+      wantTogglerReturn = (toggle_object === RETURN_TOGGLER)
+    ) => (
+      ((toggle_object === NO_TOGGLER)
+        ? (toggle_object = null)
         : (
-          ((joined1 = toatie.joinTogglers(callerToggleObject === RETURN_TOGGLER ? {} : callerToggleObject, toggleObject1, toggleObject2)) => (
-            ((callerToggleObject === RETURN_TOGGLER) ? joined1 : el1)
+          ((toggle_object === RETURN_TOGGLER) && (toggle_object = {})),
+          ((
+            on1 = () => (
+              elmnt.addEventListener(eventType, handler, aELOptions),
+              (toggle_object && (toggle_object.toggle = off1)),
+              (toggle_object && (toggle_object.run = handler)),
+              handler.onCb?.(),
+              toggle_object
+            ),
+            off1 = () => (
+              elmnt.removeEventListener(eventType, handler, aELOptions),
+              (toggle_object && (toggle_object.toggle = on1)),
+              (toggle_object && (toggle_object.run = null)),
+              handler.offCb?.(),
+              toggle_object
+            )
+          ) => (
+            (toggle_object.on  = on1),
+            (toggle_object.off = off1),
+            (toggle_object.handler = handler),
+            ((initial_state === OFF)
+              ? ((toggle_object.toggle = on1),  (toggle_object.run = null))
+              : ((toggle_object.toggle = off1), (toggle_object.run = handler))
+            )
           ))()
         )
-      )
+      ),
+      ((initial_state === ON) && (elmnt.addEventListener(eventType, handler, aELOptions), handler.onCb?.())),
+      (wantTogglerReturn ? toggle_object : elmnt)
     ))()
-  ))
-  ,(toatie.focusblur   = toatie.pair.bind(null, 'focus', 'blur'))
-  ,(toatie.mouseovers  = toatie.pair.bind(null, 'mouseover', 'mouseout'))
-  ,(toatie.mouseenters = toatie.pair.bind(null, 'mouseenter', 'mouseleave'))
+  )
+) => (
+  (toatie.bindWithThis = (el1, thisref, ...handlers) => [el1, ...handlers.map(h => h.bind(thisref, el1))]),
+  (toatie.bind = (el1, ...handlers) => [el1, ...handlers.map(h => h.bind(null, el1))]),
+  // const click = toatie.setup('click');
+  // click(el, handler);                 // repeated use
+  // toatie.setup('click')(el, handler); // ad hoc use
+  // click.off(el, handler);
+  // click.toggler()(el, handler);
+  // click.toggler(my_toggler)(el, handler);
+  // click.options(OFF, RETURN_TOGGLER)(el, handler);   // for *combinations* of options
+  (toatie.setup = (...events) => (
+    (events.length === 1)
+    ? ((default_handler = handle_event.bind(null, ON, NO_TOGGLER, events[0])) => (
+      // would prefer to name it just 'bind' but that clashes with Function.bind()
+      (default_handler.easybind = (el, handler, ...args) => handle_event(ON, NO_TOGGLER, events[0], el, handler.bind(null, el), ...args)),
+      (default_handler.off = handle_event.bind(null, OFF, NO_TOGGLER, events[0])),
+      (default_handler.off.toggler = callers_toggle_object => handle_event.bind(null, OFF, callers_toggle_object || RETURN_TOGGLER, events[0])),
+      (default_handler.toggler = callers_toggle_object => handle_event.bind(null, ON, callers_toggle_object || RETURN_TOGGLER, events[0])),
+      (default_handler.options = (arg1, arg2) => (
+        console.assert(arg1, 'caller must supply at least one argument to .options()'),
+        (
+          [ON, OFF].includes(arg1)
+          ? (
+            console.assert(((  ! arg2) || (typeof arg2 === 'object') || [RETURN_TOGGLER, NO_TOGGLER].includes(arg2)), 'option for toggler arg must be an object, NO_TOGGLER or RETURN_TOGGLER, or omitted'), //_no_interpolated_variables,_js_always_evaluates_them_whether_or_not_the_assert_trips
+            handle_event.bind(null, arg1, arg2 || NO_TOGGLER, events[0])
+          )
+          : (
+            console.assert(((  ! arg2) || [ON, OFF].includes(arg2)), 'arg 2, if provided to .options(), must be either toatie.ON or toatie.OFF'),
+            handle_event.bind(null, arg2 || ON, arg1, events[0])
+          )
+        )
+      )),
+      default_handler
+    ))()
+    : (
+      // multi_argument_setup##_is_a_convenience_&_NOT_DESIGNED_to_allow_everything_that_setup_single##_can_do;_the_combo_toggler_is_a_must,_anything_else_(.off_or_binding_both_handlers_to_an_Element_eg_documentKeyUpKeyDown##,_more_than_2_event_types)_is_a_bonus
+      // mouseenters(el, hndlr1, hndlr2) --> el;
+      // setup('mouseenter', 'mouseleave')(el, enter_handler, leave_handler);
+      // mouseenters = setup('mouseenter', 'mouseleave'); mouseenters(el, enter_handler, leave_handler);
+      // my_toggler = dummy(); mouseenters.toggler(my_toggler)(el, enter_handler, leave_handler);
+      // mouseenters.toggler()(el, enter_handler, leave_handler) --> toggler ..._UNDECIDED,_probably_treat_as_a_bonus,_implement_if_easy_to_do_so
+      // ?? maybe later ??
+      // triple event types: setup('mouseenter', 'mouseleave', 'keyup')(el, enter_handler, leave_handler, keyup_handler);
+      // both initial_state and toggler options: mouseenters = setup('mouseenter', 'mouseleave'); my_toggler = dummy(); mouseenters.off.toggler(my_toggler)(el, enter_handler, leave_handler);
+      // bind to element: documentKeyUpKeyDown = setup('keyup', 'keydown').easybind(null, document); documentKeyUpKeyDown(enter_handler, leave_handler);
+      ((
+        pair = (el, ...handlers) => (
+          handlers.forEach((h, ind) => handle_event(ON, NO_TOGGLER, events[ind], el, h)),
+          el
+        )
+      ) => (
+        pair.options = (initialState, caller_provided_toggler = NO_TOGGLER, aELOptions = null) => (
+          (el, ...handlers) => (
+            ((jt = join_togglers(caller_provided_toggler, ...handlers.map((h, ind) => handle_event(initialState, RETURN_TOGGLER, events[ind], el, h, aELOptions)))) => (
+              (((  ! caller_provided_toggler) || (caller_provided_toggler === RETURN_TOGGLER)) ? jt : el)
+            ))()
+          )
+        ),
+        pair.off = (el, ...handlers) => (
+          handlers.forEach((h, ind) => handle_event(OFF, NO_TOGGLER, events[ind], el, h)),
+          el
+        ),
+        // would prefer to name it just 'bind' but that clashes with Function.bind()
+        pair.easybind = (el, ...handlers) => (
+          handlers.forEach((h, ind) => handle_event(ON, NO_TOGGLER, events[ind], el, h.bind(null, el))),
+          el
+        ),
+        pair.toggler = caller_provided_toggler => (
+          (el, ...handlers) => (
+            ((jt = join_togglers(caller_provided_toggler, ...handlers.map((h, ind) => handle_event(ON, RETURN_TOGGLER, events[ind], el, h)))) => (
+              (((  ! caller_provided_toggler) || (caller_provided_toggler === RETURN_TOGGLER)) ? jt : el)
+            ))()
+          )
+        ),
+        pair
+      ))()
+    )
+  )),
+  (toatie.joinTogglers = join_togglers.bind(null, null)),
+  (toatie.joinTogglers.toggler = callerToggleObject => join_togglers.bind(null, callerToggleObject))
+  ,(toatie.focusblur   = toatie.setup('focus', 'blur'))
+  ,(toatie.mouseovers  = toatie.setup('mouseover', 'mouseout'))
+  ,(toatie.mouseenters = toatie.setup('mouseenter', 'mouseleave'))
 ))();
