@@ -48,7 +48,7 @@ For brevity we declare toatie aliases like this:
 const {setup, joinTogglers, ON, OFF, RETURN_TOGGLER, dummy, bind, bindWithThis, mouseovers} = toatie;
 ```
 
-Same, but demonstrates setting up an event listener and toggler without calling addEventListener() as yet:
+Demonstrates setting up an event listener and toggler without calling addEventListener() as yet:
 ```javascript
 // .off means no call to addEventListener() as yet
 const myToggler = click.off.toggler()(elmnt, handler);
