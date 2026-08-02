@@ -66,9 +66,24 @@ click.toggler(myToggler)(elmnt, handler);
 console.log(myToggler.myproperty); // myproperty is intact, this logs 'whatever'
 ```
 
+Demonstrates the use of `bind()` which allows toatie to preserve the correct target element reference (should the caller fumble the reference, or should they not wish to keep a reference at all) and make it available in the handler function:
+```javascript
+click(
+  ...bind(
+    elmnt,
+    (el, e) => console.log(`clicked element %O, event object %O`, el, e)
+  )
+);
+// it won't matter if the elmnt reference is changed or set to null
+// because the argument el to the event handler has been bound and will be preserved
+elmnt = null;                     // does not break the click handler
+elmnt = document.createElement(); // does not break the click handler
+```
+
 Events sometimes come in pairs.  Here mouseenter events turn the background colour red and mouseleave events reset it:
 ```javascript
-setup('mouseenter', 'mouseleave')(
+const mouseenterleave = setup('mouseenter', 'mouseleave');
+mouseenterleave(
   ...bind(
     elmnt,
     el => el.style.setProperty('background-color', 'red'),
@@ -78,7 +93,7 @@ setup('mouseenter', 'mouseleave')(
 // you can also write setup('mouseenter', 'mouseleave').easybind(elmnt, handler1, handler2) -- NB naming easybind 'bind' would clash with Function.bind()
 ```
 
-There's also `mouseenters()` and `focusblur()`.  You can define your own bindings:
+There's also `focusblur()`.  You can define your own bindings:
 ```javascript
 const keydownkeyup = setup('keydown', 'keyup');
 keydownkeyup(
@@ -119,20 +134,6 @@ myToggler.flipTo1st();
 // flips to 2nd if we most recently flipped to 1st
 // or flips to 1st if we most recently flipped to 2nd handler
 myToggler.flip();
-```
-
-Demonstrates the use of `bind()` which allows toatie to preserve the correct target element reference (should the caller fumble the reference, or should they not wish to keep a reference at all) and make it available in the handler function:
-```javascript
-click(
-  ...bind(
-    elmnt,
-    (el, e) => console.log(`clicked element %O, event object %O`, el, e)
-  )
-);
-// it won't matter if the elmnt reference is changed or set to null
-// because the argument el to the event handler has been bound and will be preserved
-elmnt = null;                     // does not break the click handler
-elmnt = document.createElement(); // does not break the click handler
 ```
 
 toatie.bind() clobbers your handler function's `this` reference. If you want to preserve your `this` then:
