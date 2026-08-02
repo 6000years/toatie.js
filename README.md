@@ -41,6 +41,11 @@ myToggler.toggle(); // calls removeEventListener()
 myToggler.run?.()   // undefined, does nothing
 myToggler.toggle(); // calls addEventListener()
 myToggler.run?.()   // runs the handler directly (not as a result of a user event firing)
+
+// if you want to own the toggler object in order to track state:
+const myToggler = { myproperty: 'whatever' }; // alternatively dummy() returns a do-nothing toggler object
+click.toggler(myToggler)(elmnt, handler);
+console.log(myToggler.myproperty); // myproperty is intact, this logs 'whatever'
 ```
 
 For brevity we declare toatie aliases like this:
@@ -57,13 +62,6 @@ mypromise
   .then(myToggler.on)
   .then(() => dostuff())
   .finally(myToggler.off);
-```
-
-Same, but caller owns and controls the toggler right from the beginning:
-```javascript
-const myToggler = { myproperty: 'whatever' }; // alternatively dummy() returns a do-nothing toggler object
-click.toggler(myToggler)(elmnt, handler);
-console.log(myToggler.myproperty); // myproperty is intact, this logs 'whatever'
 ```
 
 Demonstrates the use of `bind()` which allows toatie to preserve the correct target element reference (should the caller fumble the reference, or should they not wish to keep a reference at all) and make it available in the handler function:
