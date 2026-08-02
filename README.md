@@ -29,16 +29,13 @@ click(elmnt, handler);
 document.body.append(click(elmnt, handler));
 ```
 
-Same, but demonstrates a toggler:
+Togglers are the most useful thing in toatie:
 ```javascript
-const myToggler = click.toggler()(
-  elmnt,
-  handler
-);
+const myToggler = click.toggler()(elmnt, handler);
 myToggler.off();    // calls elmnt.removeEventListener('click', handler)
 myToggler.on();     // calls addEventListener()
 myToggler.toggle(); // calls removeEventListener()
-myToggler.run?.()   // undefined, does nothing
+myToggler.run?.()   // undefined, does nothing because toggler is in the off state
 myToggler.toggle(); // calls addEventListener()
 myToggler.run?.()   // runs the handler directly (not as a result of a user event firing)
 
@@ -53,18 +50,19 @@ For brevity we declare toatie aliases like this:
 const {setup, joinTogglers, ON, OFF, RETURN_TOGGLER, dummy, bind, bindWithThis, mouseovers} = toatie;
 ```
 
-Demonstrates setting up an event listener and toggler without calling addEventListener() as yet:
+Set up an event listener and toggler without calling addEventListener() as yet:
 ```javascript
 // .off means no call to addEventListener() as yet
 const myToggler = click.off.toggler()(elmnt, handler);
-// if on/off depends on an expression then you can write this: const myToggler = click.options(expr ? ON : OFF, RETURN_TOGGLER)(elmnt, handler);
+// if on/off depends on an expression then you can write this:
+// const myToggler = click.options(expr ? ON : OFF, RETURN_TOGGLER)(elmnt, handler);
 mypromise
   .then(myToggler.on)
   .then(() => dostuff())
   .finally(myToggler.off);
 ```
 
-Demonstrates the use of `bind()` which allows toatie to preserve the correct target element reference (should the caller fumble the reference, or should they not wish to keep a reference at all) and make it available in the handler function:
+`bind()` preserves the correct target element reference (should the caller fumble the reference, or should they not wish to keep a reference at all) and make it available in the handler function:
 ```javascript
 click(
   ...bind(
@@ -88,7 +86,8 @@ mouseenterleave(
     el => el.style.removeProperty('background-color')
   )
 );
-// you can also write setup('mouseenter', 'mouseleave').easybind(elmnt, handler1, handler2) -- NB naming easybind 'bind' would clash with Function.bind()
+// you can also write setup('mouseenter', 'mouseleave').easybind(elmnt, handler1, handler2)
+// ( naming easybind 'bind' would clash with Function.bind() )
 ```
 
 There's also `focusblur()`.  You can define your own bindings:
