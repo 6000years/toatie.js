@@ -40,14 +40,14 @@ myToggler.toggle(); // calls addEventListener()
 myToggler.run?.()   // runs the handler directly (not as a result of a user event firing)
 
 // if you want to own the toggler object in order to track state:
-const myToggler = { myproperty: 'whatever' }; // alternatively dummy() returns a do-nothing toggler object
+const myToggler = { myproperty: 'whatever' }; // alternatively dummy() gives a do-nothing toggler
 click.toggler(myToggler)(elmnt, handler);
 console.log(myToggler.myproperty); // myproperty is intact, this logs 'whatever'
 ```
 
 For brevity we declare toatie aliases like this:
 ```javascript
-const {setup, joinTogglers, ON, OFF, RETURN_TOGGLER, dummy, bind, bindWithThis, mouseovers} = toatie;
+const {setup, joinTogglers, ON, OFF, RETURN_TOGGLER, dummy, bind, mouseovers} = toatie;
 ```
 
 Set up an event listener and toggler without calling addEventListener() as yet:
