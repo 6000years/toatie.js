@@ -59,7 +59,7 @@ const myToggler = click.toggler().off(elmnt, handler);
 // const myToggler = click.options(expr ? ON : OFF, RETURN_TOGGLER)(elmnt, handler);
 mypromise
   .then(myToggler.on)
-  .then(() => defeatTheForcesOfEvil({ truth: true, honour: true, courage: true }))
+  .then(() => defeatTheForcesOfEvil({ honour: true, courage: true, truth: Infinity.toExponential() }))
   .finally(myToggler.off);
 ```
 
