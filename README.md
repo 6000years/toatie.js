@@ -19,17 +19,18 @@ toatie.setup('click')(elmnt, handler);
 // where elmnt comes (typically) from getElementById() or document.createElement()
 // and handler is an event handler function, eg e => console.log(e.type)
 
-// for convenience you may wish to define your own bindings:
-const click = toatie.setup('click');
+// for later convenience you may wish to define your own bindings:
+const {setup} = toatie;
+const click = setup('click');
 // now you can write
-click(elmnt, handler);
+click(elmnt, handler); // optionally add addEventListener options here too
 // instead of elmnt.addEventListener('click', handler)
 
 // bonus - it's a composable API:
 document.body.append(click(elmnt, handler));
 ```
 
-Togglers are the most useful thing in toatie:
+Togglers make removeEventListener() easy:
 ```javascript
 const myToggler = click.toggler()(elmnt, handler);
 myToggler.off();    // calls elmnt.removeEventListener('click', handler)
@@ -53,7 +54,7 @@ const {setup, joinTogglers, ON, OFF, RETURN_TOGGLER, dummy, bind, mouseovers} = 
 Set up an event listener and toggler without calling addEventListener() as yet:
 ```javascript
 // .off means no call to addEventListener() as yet
-const myToggler = click.off.toggler()(elmnt, handler);
+const myToggler = click.toggler().off(elmnt, handler);
 // if on/off depends on an expression then you can write this:
 // const myToggler = click.options(expr ? ON : OFF, RETURN_TOGGLER)(elmnt, handler);
 mypromise
@@ -112,14 +113,13 @@ doubleToggler.off(); // calls removeEventListener() for both handlers
 
 `setup('keydown', 'keyup')` joins two togglers together using `joinTogglers()`.  You can use it too:
 ```javascript
-const myToggler = {};
-joinTogglers.toggler(myToggler)(
+const myTripleToggler = joinTogglers.toggler()(
   setup('scroll').toggler()(elmnt, handler1),
   setup('load').toggler()(imageElmnt, handler2),
   setup('mousemove').toggler()(document.body, handler3)
   // ... add as many events as you like ...
 );
-myToggler.off();
+defeatTheForcesOfEvil.then(myTripleToggler.off);
 ```
 
 Joined togglers have more tricks:
