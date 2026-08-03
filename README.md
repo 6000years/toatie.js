@@ -59,7 +59,7 @@ const myToggler = click.toggler().off(elmnt, handler);
 // const myToggler = click.options(expr ? ON : OFF, RETURN_TOGGLER)(elmnt, handler);
 mypromise
   .then(myToggler.on)
-  .then(() => dostuff())
+  .then(() => defeatTheForcesOfEvil())
   .finally(myToggler.off);
 ```
 
@@ -103,12 +103,12 @@ keydownkeyup(
 
 Toggle both event handlers in one fell swoop:
 ```javascript
-const doubleToggler = mouseovers.toggler(
+const myDoubleToggler = mouseovers.toggler()(
   elmnt,
   () => console.log('mouseover'),
   () => console.log('mouseout')
 );
-doubleToggler.off(); // calls removeEventListener() for both handlers
+myDoubleToggler.off(); // calls removeEventListener() for both handlers
 ```
 
 `setup('keydown', 'keyup')` joins two togglers together using `joinTogglers()`.  You can use it too:
@@ -168,9 +168,9 @@ const modeFlipTheButtons = joinTogglers(
     )
   ))(),
   joinTogglers(
-    click.off.toggler()(loadButton, loadNewItems),
-    click.off.toggler()(reduceButton, reduce),
-    click.off.toggler()(loadAndReduceButton, () => (loadNewItems(), reduce()))
+    click.toggler().off(loadButton, loadNewItems),
+    click.toggler().off(reduceButton, reduce),
+    click.toggler().off(loadAndReduceButton, () => (loadNewItems(), reduce()))
   )
 );
 loadStartupData().then(modeFlipTheButtons.flipTo2nd);
