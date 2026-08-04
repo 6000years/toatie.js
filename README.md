@@ -52,9 +52,8 @@ const {setup, joinTogglers, ON, OFF, RETURN_TOGGLER, dummy, bind, mouseovers} = 
 
 Set up an event listener and toggler without calling addEventListener() as yet:
 ```javascript
-// .notyet means no call to addEventListener()
 const myToggler = click.toggler().notyet(elmnt, handler);
-// if on/off depends on an expression then you can write this:
+// if on/off depends on an expression then you can write:
 // const myToggler = click.options(expr ? ON : OFF, RETURN_TOGGLER)(elmnt, handler);
 mypromise
   .then(myToggler.on)
@@ -62,13 +61,11 @@ mypromise
   .finally(myToggler.off);
 ```
 
-`bind()` preserves the correct target element reference (should the caller fumble the reference, or should they not wish to keep a reference at all) and make it available in the handler function:
+`.ttbind` preserves the correct target element reference (should the caller fumble the reference, or should they not wish to keep a reference at all) and make it available in the handler function:
 ```javascript
-click(
-  ...bind(
-    elmnt,
-    (el, e) => console.log(`clicked element %O, event object %O`, el, e)
-  )
+click.ttbind(
+  elmnt,
+  (el, e) => console.log(`clicked element %O, event object %O`, el, e)
 );
 // it won't matter if the elmnt reference is changed or set to null
 // because the argument el to the event handler has been bound and will be preserved
@@ -78,14 +75,12 @@ elmnt = document.createElement(); // does not break the click handler
 
 Events sometimes come in pairs.  Here mouseover events turn the background colour red and mouseout events reset it:
 ```javascript
-mouseovers(
-  ...bind(
-    elmnt,
-    el => el.style.setProperty('background-color', 'red'),
-    el => el.style.removeProperty('background-color')
-  )
+mouseovers.ttbind(
+  elmnt,
+  el => el.style.setProperty('background-color', 'red'),
+  el => el.style.removeProperty('background-color')
 );
-// you can also write mouseovers.ttbind(elmnt, handler1, handler2)
+// you can also write mouseovers(...bind(elmnt, handler1, handler2))
 // ( naming ttbind 'bind' would clash with Function.bind() )
 ```
 
