@@ -52,7 +52,7 @@ const {setup, joinTogglers, ON, OFF, RETURN_TOGGLER, dummy, bind, mouseovers} = 
 
 Set up an event listener and toggler without calling addEventListener() as yet:
 ```javascript
-// .notyet means no call to addEventListener() as yet
+// .notyet means no call to addEventListener()
 const myToggler = click.toggler().notyet(elmnt, handler);
 // if on/off depends on an expression then you can write this:
 // const myToggler = click.options(expr ? ON : OFF, RETURN_TOGGLER)(elmnt, handler);
@@ -76,21 +76,20 @@ elmnt = null;                     // does not break the click handler
 elmnt = document.createElement(); // does not break the click handler
 ```
 
-Events sometimes come in pairs.  Here mouseenter events turn the background colour red and mouseleave events reset it:
+Events sometimes come in pairs.  Here mouseover events turn the background colour red and mouseout events reset it:
 ```javascript
-const mouseenterleave = setup('mouseenter', 'mouseleave');
-mouseenterleave(
+mouseovers(
   ...bind(
     elmnt,
     el => el.style.setProperty('background-color', 'red'),
     el => el.style.removeProperty('background-color')
   )
 );
-// you can also write setup('mouseenter', 'mouseleave').ttbind(elmnt, handler1, handler2)
+// you can also write mouseovers.ttbind(elmnt, handler1, handler2)
 // ( naming ttbind 'bind' would clash with Function.bind() )
 ```
 
-There's also `focusblur()`.  You can define your own bindings:
+toatie.js also provides `focusblur()`.  You can define your own bindings:
 ```javascript
 const keydownkeyup = setup('keydown', 'keyup');
 keydownkeyup(
