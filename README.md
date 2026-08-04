@@ -4,7 +4,7 @@ A toatie wee javascript event handling library providing higher concept wrapper 
 
 ## Installation
 
-No dependencies, no configuration, no complexity. Add <script src="toatie.js"></script> to your HTML.
+None as such. Add <script src="toatie.js"></script> to the <head> section of your HTML.
 
 ## License
 
@@ -22,18 +22,17 @@ toatie.setup('click')(elmnt, handler);
 // for later convenience you may wish to define your own bindings:
 const {setup} = toatie;
 const click = setup('click');
-// now you can write
-click(elmnt, handler); // optionally add addEventListener options here too
-// instead of elmnt.addEventListener('click', handler)
+// now, instead of elmnt.addEventListener('click', handler):
+click(elmnt, handler); // you can add addEventListener {capture, once, etc} options here
 
 // bonus - it's a composable API:
 document.body.append(click(elmnt, handler));
 ```
 
-Togglers make removeEventListener() easy:
+Togglers make add/removeEventListener() trivially easy:
 ```javascript
 const myToggler = click.toggler()(elmnt, handler);
-myToggler.off();    // calls elmnt.removeEventListener('click', handler)
+myToggler.off();    // calls removeEventListener(), remembering {capture: true} if you specified it
 myToggler.on();     // calls addEventListener()
 myToggler.toggle(); // calls removeEventListener()
 myToggler.run?.()   // undefined, does nothing because toggler is in the off state
