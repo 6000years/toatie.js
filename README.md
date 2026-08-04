@@ -29,7 +29,7 @@ click(elmnt, handler); // you can add addEventListener {capture, once, etc} opti
 document.body.append(click(elmnt, handler));
 ```
 
-Togglers make add/removeEventListener() trivially easy:
+Togglers make add/removeEventListener() simple:
 ```javascript
 const myToggler = click.toggler()(elmnt, handler);
 myToggler.off();    // calls removeEventListener(), remembering {capture: true} if you specified it
@@ -39,10 +39,10 @@ myToggler.run?.()   // undefined, does nothing because toggler is in the off sta
 myToggler.toggle(); // calls addEventListener()
 myToggler.run?.()   // runs the handler directly (not as a result of a user event firing)
 
-// if you want to own the toggler object in order to track state:
+// you can pass in a toggler object of your own if you like:
 const myToggler = { myproperty: 'whatever' }; // alternatively dummy() gives a do-nothing toggler
 click.toggler(myToggler)(elmnt, handler);
-console.log(myToggler.myproperty); // myproperty is intact, this logs 'whatever'
+console.log(myToggler.myproperty); // intact, logs 'whatever'
 ```
 
 For brevity we declare toatie aliases like this:
@@ -52,13 +52,13 @@ const {setup, joinTogglers, ON, OFF, RETURN_TOGGLER, dummy, bind, mouseovers} = 
 
 Set up an event listener and toggler without calling addEventListener() as yet:
 ```javascript
-// .off means no call to addEventListener() as yet
-const myToggler = click.toggler().off(elmnt, handler);
+// .notyet means no call to addEventListener() as yet
+const myToggler = click.toggler().notyet(elmnt, handler);
 // if on/off depends on an expression then you can write this:
 // const myToggler = click.options(expr ? ON : OFF, RETURN_TOGGLER)(elmnt, handler);
 mypromise
   .then(myToggler.on)
-  .then(() => defeatTheForcesOfEvil({ honour: true, courage: true, truth: Infinity.toExponential() }))
+  .then(() => defeatTheForcesOfEvil({ Honour: true, Courage: true, Truth: Infinity.toExponential() }))
   .finally(myToggler.off);
 ```
 
@@ -86,8 +86,8 @@ mouseenterleave(
     el => el.style.removeProperty('background-color')
   )
 );
-// you can also write setup('mouseenter', 'mouseleave').easybind(elmnt, handler1, handler2)
-// ( naming easybind 'bind' would clash with Function.bind() )
+// you can also write setup('mouseenter', 'mouseleave').ttbind(elmnt, handler1, handler2)
+// ( naming ttbind 'bind' would clash with Function.bind() )
 ```
 
 There's also `focusblur()`.  You can define your own bindings:
@@ -112,7 +112,7 @@ myDoubleToggler.off(); // calls removeEventListener() for both handlers
 
 `setup('keydown', 'keyup')` joins two togglers together using `joinTogglers()`.  You can use it too:
 ```javascript
-const myTripleToggler = joinTogglers.toggler()(
+const myTripleToggler = joinTogglers(
   setup('scroll').toggler()(elmnt, handler1),
   setup('load').toggler()(imageElmnt, handler2),
   setup('mousemove').toggler()(document.body, handler3)
@@ -153,7 +153,7 @@ const handler = () => console.log('clicked');
 handler.onCb  = () => console.log("toatie just called addEventListener()");
 handler.offCb = () => console.log("toatie just called removeEventListener()");
 click(elmnt, handler); // logs "toatie just called addEventListener()"
-click.off(elmnt, handler); // logs nothing
+click.notyet(elmnt, handler); // logs nothing
 ```
 
 Togglers can be combined arbitrarily.  That's what you need when you're writing a complex javascript application that does mode switches.
@@ -167,9 +167,9 @@ const modeFlipTheButtons = joinTogglers(
     )
   ))(),
   joinTogglers(
-    click.toggler().off(loadButton, loadNewItems),
-    click.toggler().off(reduceButton, reduce),
-    click.toggler().off(loadAndReduceButton, () => (loadNewItems(), reduce()))
+    click.toggler().notyet(loadButton, loadNewItems),
+    click.toggler().notyet(reduceButton, reduce),
+    click.toggler().notyet(loadAndReduceButton, () => (loadNewItems(), reduce()))
   )
 );
 loadStartupData().then(modeFlipTheButtons.flipTo2nd);
