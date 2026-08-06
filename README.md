@@ -31,15 +31,17 @@ document.body.append(click(elmnt, handler));
 
 Togglers make add/removeEventListener() simple:
 ```javascript
-const myToggler = click.toggler()(elmnt, handler);
-myToggler.off();    // calls removeEventListener(), remembering {capture: true} if you specified it
-myToggler.on();     // calls addEventListener()
-myToggler.toggle(); // calls removeEventListener()
+const myToggler = click.toggler()(elmnt, handler, {capture: true});
+myToggler.off();    // elmnt.removeEventListener('click', handler, {capture: true})
+myToggler.on();     // elmnt.addEventListener('click', handler, {capture: true})
+myToggler.toggle(); // flip state, call removeEventListener() again
+myToggler.toggle(ON); // calls addEventListener() -- .toggle(true|false|ON|OFF)
+myToggler.run?.()   // runs handler directly (not as a result of a user event firing)
+myToggler.off()
 myToggler.run?.()   // undefined, does nothing because toggler is in the off state
-myToggler.toggle(); // calls addEventListener(); you can also specify .toggle(true|false|ON|OFF)
-myToggler.run?.()   // runs the handler directly (not as a result of a user event firing)
+myToggler.handler() // runs the handler (never undefined)
 
-// you can pass in a toggler object of your own if you like:
+// you can pass in a toggler object of your own:
 const myToggler = { myproperty: 'whatever' }; // alternatively dummy() gives a do-nothing toggler
 click.toggler(myToggler)(elmnt, handler);
 console.log(myToggler.myproperty); // intact, logs 'whatever'
