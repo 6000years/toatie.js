@@ -4,7 +4,7 @@ A toatie wee javascript event handling library providing higher concept wrapper 
 
 ## Installation
 
-None as such. Add <script src="toatie.js"></script> to the <head> section of your HTML.
+None as such. Add <script src="toatie.js"></script> to the \<head\> section of your HTML.
 
 ## License
 
@@ -50,7 +50,7 @@ For brevity we declare toatie aliases like this:
 const {setup, joinTogglers, ON, OFF, RETURN_TOGGLER, dummy, bind, mouseovers} = toatie;
 ```
 
-Set up an event listener and toggler without calling addEventListener() as yet:
+Set up an event listener and toggler without calling `addEventListener()` as yet:
 ```javascript
 const myToggler = click.toggler().notyet(elmnt, handler);
 // if on/off depends on an expression then you can write:
