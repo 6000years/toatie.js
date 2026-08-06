@@ -36,7 +36,7 @@ myToggler.off();    // calls removeEventListener(), remembering {capture: true} 
 myToggler.on();     // calls addEventListener()
 myToggler.toggle(); // calls removeEventListener()
 myToggler.run?.()   // undefined, does nothing because toggler is in the off state
-myToggler.toggle(); // calls addEventListener()
+myToggler.toggle(); // calls addEventListener(); you can also specify .toggle(true|false|ON|OFF)
 myToggler.run?.()   // runs the handler directly (not as a result of a user event firing)
 
 // you can pass in a toggler object of your own if you like:
@@ -82,6 +82,13 @@ mouseovers.ttbind(
 );
 // you can also write mouseovers(...bind(elmnt, handler1, handler2))
 // ( naming ttbind 'bind' would clash with Function.bind() )
+```
+
+Some events are typically associated with a certain element, for instance mousemove works with `document`. Lock it in:
+```javascript
+const mousemove = setup('mousemove').element(document);
+// ... later ...
+mousemove(e => console.log('mouse moved'));
 ```
 
 toatie.js also provides `focusblur()`.  You can define your own bindings:
