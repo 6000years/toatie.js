@@ -1,9 +1,9 @@
 'use strict';
 
 const toatie = {
-  dummy: (clue1 = 'dummy switched on', clue2 = 'dummy switched off') => ({
-    on:  () => console.debug(clue1),
-    off: () => console.debug(clue2),
+  dummy: (clue = 'dummy switched') => ({
+    on:  () => console.debug(`${clue} ON`),
+    off: () => console.debug(`${clue} OFF`),
     toggle:  () => false,
     handler: () => false
   }),
@@ -14,14 +14,15 @@ const toatie = {
 
 ((
   {RETURN_TOGGLER, ON, OFF} = toatie,
-  opts = {NOTYET: Symbol('initial_state'), TTBIND: Symbol('ttbind_opt'), TOGGLER: Symbol('toggler_opt')},
+  PRIVATE_SYMBOL = Symbol('PRIVATE_SYMBOL'),
+  opts = {NOTYET: Symbol('NOTYET'), BIND_ELEMENT_TO_HANDLERS: Symbol('BIND_ELEMENT_TO_HANDLERS'), TOGGLER: Symbol('TOGGLER'), USE_ELEMENT: Symbol('USE_ELEMENT')},
   NO_TOGGLER = Symbol('NO_TOGGLER'),
   join_togglers = (joinedToggler, ...togglers) => (
     ((joinedToggler === RETURN_TOGGLER) && (joinedToggler = {})),
     (joinedToggler ??= {}),
     (joinedToggler.on  = () => (togglers.forEach(n => n.on()), joinedToggler)),
     (joinedToggler.off = () => (togglers.forEach(n => n.off()), joinedToggler)),
-    (joinedToggler.toggle = () => (togglers.forEach(n => n.toggle()), joinedToggler)),
+    (joinedToggler.toggle = on_or_off_1 => (togglers.forEach(n => n.toggle(on_or_off_1)), joinedToggler)),
     ((flipTo1st = () => (
       togglers[0].on(),
       togglers[1].off(),
@@ -48,7 +49,7 @@ const toatie = {
   ),
   handle_event = (he_flags, event_type, elmnt, handler, aELOptions) => (
     ((
-      bound_handler = he_flags[opts.TTBIND] ? handler.bind(null, elmnt) : handler,
+      bound_handler = he_flags[opts.BIND_ELEMENT_TO_HANDLERS] ? handler.bind(null, elmnt) : handler,
       toggle_object = he_flags[opts.TOGGLER] || NO_TOGGLER,
       initial_state = he_flags[opts.NOTYET] || ON
     ) => (
@@ -69,14 +70,12 @@ const toatie = {
             ((
               on1 = () => (
                 elmnt.addEventListener(event_type, bound_handler, aELOptions),
-                (toggle_object && (toggle_object.toggle = off1)),
                 (toggle_object && (toggle_object.run = bound_handler)),
                 handler.onCb?.(),
                 toggle_object
               ),
               off1 = () => (
                 elmnt.removeEventListener(event_type, bound_handler, aELOptions),
-                (toggle_object && (toggle_object.toggle = on1)),
                 (toggle_object && (toggle_object.run = null)),
                 handler.offCb?.(),
                 toggle_object
@@ -85,10 +84,14 @@ const toatie = {
               (toggle_object.on  = on1),
               (toggle_object.off = off1),
               (toggle_object.handler = bound_handler),
-              ((initial_state === OFF)
-                ? ((toggle_object.toggle = on1),  (toggle_object.run = null))
-                : ((toggle_object.toggle = off1), (toggle_object.run = bound_handler))
-              )
+              (toggle_object.toggle = (on_or_off = PRIVATE_SYMBOL) => (
+                (
+                  (on_or_off === PRIVATE_SYMBOL) // ie_caller_did_not_specify_an_arg
+                  ? ((toggle_object.run === null) ? on1() : off1())
+                  : ((on_or_off === OFF) || (  ! on_or_off)) ? off1() : on1()
+                )
+              )),
+              (toggle_object.run = ((initial_state === OFF) ? null : bound_handler))
             ))()
           )
         ),
@@ -106,16 +109,28 @@ const toatie = {
   // click.notyet(el, handler);
   // click.toggler()(el, handler);
   // click.toggler(my_toggler)(el, handler);
-  // click.options(OFF, RETURN_TOGGLER)(el, handler);   // for *combinations* of options
+  // click.options(_OFF, _RETURN_TOGGLER)(el, handler);   // for *combinations* of options
   (toatie.setup = (...events) => (
     (events.length === 1)
     ? ((
       chain = (event_type_1, flags, done) => (
-        ((terminal = (element_1, handler_1, ...args) => handle_event(flags, event_type_1, element_1, handler_1, ...args)) => (
-          (done.includes('__toggler__') || (terminal.toggler = (callers_toggle_object = RETURN_TOGGLER) => chain(event_type_1, {...flags, [opts.TOGGLER]: callers_toggle_object}, done.concat('__toggler__')))),
-          (done.includes('not__yet') || (terminal.notyet = chain(event_type_1, {...flags, [opts.NOTYET]: true}, done.concat('not__yet')))),
+        ((
+          terminal = (
+            flags[opts.USE_ELEMENT]
+            ? (handler_1, ...args)           => handle_event(flags, event_type_1, flags[opts.USE_ELEMENT], handler_1, ...args)
+            :(element_1, handler_1, ...args) => handle_event(flags, event_type_1, element_1, handler_1, ...args)
+          )
+        ) => (
+          (done.includes(opts.TOGGLER) || (terminal.toggler = (callers_toggle_object = RETURN_TOGGLER) => chain(event_type_1, {...flags, [opts.TOGGLER]: callers_toggle_object}, done.concat(opts.TOGGLER)))),
+          (done.includes(opts.NOTYET) || (terminal.notyet = chain(event_type_1, {...flags, [opts.NOTYET]: true}, done.concat(opts.NOTYET)))),
           // would prefer to name it just 'bind' but that clashes with Function.bind()
-          (done.includes('tt__bind') || (terminal.ttbind = chain(event_type_1, {...flags, [opts.TTBIND]: true}, done.concat('tt__bind')))),
+          (done.includes(opts.BIND_ELEMENT_TO_HANDLERS) || (terminal.ttbind = chain(event_type_1, {...flags, [opts.BIND_ELEMENT_TO_HANDLERS]: true}, done.concat(opts.BIND_ELEMENT_TO_HANDLERS)))),
+          (done.includes(opts.USE_ELEMENT) || (terminal.element =
+            use_this_element => (
+              console.assert(use_this_element && ((use_this_element instanceof HTMLElement) || (use_this_element instanceof HTMLDocument)), 'caller must supply one argument of type HTMLElement to setup().element()'),
+              chain(event_type_1, {[opts.USE_ELEMENT]: use_this_element}, done.concat(opts.USE_ELEMENT))
+            )
+          )),
           terminal
         ))()
       )
