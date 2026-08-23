@@ -14,10 +14,11 @@ Open source except for the words `toatie` and `wee` which are the exclusive prop
 
 Trivial use:
 ```javascript
+const click = toatie.setup('click');
 // wrap addEventListener()
-toatie.setup('click')(elmnt, handler);
+click(elmnt, handler);
 // where elmnt comes (typically) from getElementById() or document.createElement()
-// and handler is an event handler function, eg e => console.log(e.type)
+// and handler is your event handler function, eg e => console.log(e.type)
 
 // for later convenience you may wish to define your own bindings:
 const {setup} = toatie;
