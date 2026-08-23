@@ -43,9 +43,9 @@ myToggler.run?.()   // undefined, does nothing because toggler is in the off sta
 myToggler.handler() // runs the handler (never undefined)
 
 // you can pass in a toggler object of your own:
-const myToggler = { myproperty: 'whatever' }; // alternatively dummy() gives a do-nothing toggler
-click.toggler(myToggler)(elmnt, handler);
-console.log(myToggler.myproperty); // intact, logs 'whatever'
+const myToggler = { myproperty: 'whatever' }; // alternatively toatie.dummy() gives a do-nothing toggler
+click.toggler(myToggler)(elmnt, handler);     // returns elmnt
+console.log(myToggler.myproperty);            // intact, logs 'whatever'
 ```
 
 For brevity we declare toatie aliases like this:
@@ -90,7 +90,6 @@ mouseovers.ttbind(
 Some events are typically associated with a certain element, for instance mousemove works with `document`. Lock it in:
 ```javascript
 const mousemove = setup('mousemove').element(document);
-// ... later ...
 mousemove(e => console.log('mouse moved'));
 ```
 
@@ -163,7 +162,7 @@ click.notyet(elmnt, handler); // logs nothing
 Togglers can be combined arbitrarily.  That's what you need when you're writing a complex javascript application that does mode switches.
 ```javascript
 const modeFlipTheButtons = joinTogglers(
-  ((hurryUpFn = () => (window.lazyLoad = false)) => (
+  ((hurryUpFn = () => (window.lazyLoadUserData = false)) => (
     joinTogglers(
       click.toggler()(loadButton, hurryUpFn),
       click.toggler()(reduceButton, hurryUpFn),
