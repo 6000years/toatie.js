@@ -14,16 +14,18 @@ Open source except for the words `toatie` and `wee` which are the exclusive prop
 
 Simplest possible use:
 ```javascript
+toatie.setup('click')(elmnt, handler)
+// which does the same as elmnt.addEventListener('click', handler)
+
+// you can set up aliases to make the click() calls shorter:
 const {setup} = toatie;
 const click = setup('click');
-
-// now instead of elmnt.addEventListener('click', handler):
 click(elmnt, handler);
 
-// pass addEventListener options through like this:
+// you can pass addEventListener() options through like this:
 click(elmnt, handler, {capture: true});
 
-// composable API:
+// it's a composable API:
 document.body.append(click(elmnt, handler));
 ```
 
