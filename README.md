@@ -12,10 +12,11 @@ Open source except for the words `toatie` and `wee` which are the exclusive prop
 
 ## Usage
 
-Trivial use:
+Simplest possible use:
 ```javascript
 const {setup} = toatie;
 const click = setup('click');
+
 // now instead of elmnt.addEventListener('click', handler):
 click(elmnt, handler);
 
@@ -26,11 +27,12 @@ click(elmnt, handler, {capture: true});
 document.body.append(click(elmnt, handler));
 ```
 
-Togglers make add/removeEventListener() simple:
+Togglers make add/removeEventListener() easy:
 ```javascript
 const myToggler = click.toggler()(elmnt, handler);
-myToggler.off();    // elmnt.removeEventListener('click', handler, {capture: true})
-myToggler.on();     // elmnt.addEventListener('click', handler, {capture: true})
+myToggler.off();    // elmnt.removeEventListener('click', handler)
+                    // (and toatie remembers {capture: true}, if you set it)
+myToggler.on();     // elmnt.addEventListener('click', handler)
 myToggler.toggle(); // flip state, call removeEventListener() again
 myToggler.toggle(ON); // calls addEventListener() -- .toggle(true|false|ON|OFF)
 myToggler.run?.()   // runs handler directly (not as a result of a user event firing)
