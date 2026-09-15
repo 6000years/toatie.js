@@ -12,7 +12,7 @@ Open source except for the words `toatie` and `wee` which are the exclusive prop
 
 ## Usage
 
-Simplest possible use:
+Simplest possible use (no benefits yet):
 ```javascript
 toatie.setup('click')(elmnt, handler)
 // which does the same as elmnt.addEventListener('click', handler)
