@@ -14,25 +14,21 @@ Open source except for the words `toatie` and `wee` which are the exclusive prop
 
 Trivial use:
 ```javascript
-const click = toatie.setup('click');
-// wrap addEventListener()
-click(elmnt, handler);
-// where elmnt comes (typically) from getElementById() or document.createElement()
-// and handler is your event handler function, eg e => console.log(e.type)
-
-// for later convenience you may wish to define your own bindings:
 const {setup} = toatie;
 const click = setup('click');
-// now, instead of elmnt.addEventListener('click', handler):
-click(elmnt, handler); // you can add addEventListener {capture, once, etc} options here
+// now instead of elmnt.addEventListener('click', handler):
+click(elmnt, handler);
 
-// bonus - it's a composable API:
+// pass addEventListener options through like this:
+click(elmnt, handler, {capture: true});
+
+// composable API:
 document.body.append(click(elmnt, handler));
 ```
 
 Togglers make add/removeEventListener() simple:
 ```javascript
-const myToggler = click.toggler()(elmnt, handler, {capture: true});
+const myToggler = click.toggler()(elmnt, handler);
 myToggler.off();    // elmnt.removeEventListener('click', handler, {capture: true})
 myToggler.on();     // elmnt.addEventListener('click', handler, {capture: true})
 myToggler.toggle(); // flip state, call removeEventListener() again
