@@ -12,17 +12,17 @@ Open source except for the words `toatie` and `wee` which are the exclusive prop
 
 ## Usage
 
-Simplest possible use (no benefits yet):
+Simplest possible use (no significant benefits yet):
 ```javascript
 toatie.setup('click')(elmnt, handler)
 // which does the same as elmnt.addEventListener('click', handler)
 
-// you can set up aliases to make the click() calls shorter:
+// you can set up aliases to make the calls shorter:
 const {setup} = toatie;
 const click = setup('click');
 click(elmnt, handler);
 
-// you can pass addEventListener() options through like this:
+// pass addEventListener() options like this:
 click(elmnt, handler, {capture: true});
 
 // it's a composable API:
