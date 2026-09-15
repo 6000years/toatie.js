@@ -62,7 +62,7 @@ mypromise
   .finally(myToggler.off);
 ```
 
-`.ttbind` preserves the correct target element reference (should the caller fumble the reference, or should they not wish to keep a reference at all) and make it available in the handler function:
+`.ttbind` preserves the correct target element reference (should the caller fumble the reference, or should they not wish to keep a reference at all) and makes it available in the handler function:
 ```javascript
 click.ttbind(
   elmnt,
