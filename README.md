@@ -16,15 +16,16 @@ Simplest possible use (no benefits yet):
 ```javascript
 toatie.setup('click')(elmnt, handler); // same as elmnt.addEventListener('click', handler)
 
-// set up aliases to make the calls shorter
+// that was too wordy, so set up some aliases
 const {setup} = toatie;
 const click = setup('click');
+// typical expected use of toatie.js :
 click(elmnt, handler);
 
-// pass addEventListener() options like this
+// pass addEventListener() options
 click(elmnt, handler, {capture: true});
 
-// it's a composable API
+// composable API
 document.body.append(click(elmnt, handler));
 ```
 
