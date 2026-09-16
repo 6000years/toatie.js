@@ -12,20 +12,19 @@ Open source except for the words `toatie` and `wee` which are the exclusive prop
 
 ## Usage
 
-Simplest possible use (no significant benefits yet):
+Simplest possible use (no benefits yet):
 ```javascript
-toatie.setup('click')(elmnt, handler)
-// which does the same as elmnt.addEventListener('click', handler)
+toatie.setup('click')(elmnt, handler); // same as elmnt.addEventListener('click', handler)
 
-// you can set up aliases to make the calls shorter:
+// set up aliases to make the calls shorter
 const {setup} = toatie;
 const click = setup('click');
 click(elmnt, handler);
 
-// pass addEventListener() options like this:
+// pass addEventListener() options like this
 click(elmnt, handler, {capture: true});
 
-// it's a composable API:
+// it's a composable API
 document.body.append(click(elmnt, handler));
 ```
 
@@ -121,7 +120,7 @@ const myTripleToggler = joinTogglers(
   setup('mousemove').toggler()(document.body, handler3)
   // ... add as many events as you like ...
 );
-defeatTheForcesOfEvil.then(myTripleToggler.off);
+defeatTheForcesOfEvil().then(myTripleToggler.off);
 ```
 
 Joined togglers have more tricks:
