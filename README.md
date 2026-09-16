@@ -48,7 +48,7 @@ click.toggler(myToggler)(elmnt, handler);     // returns elmnt
 console.log(myToggler.myproperty);            // intact, logs 'whatever'
 ```
 
-For brevity we declare toatie aliases like this:
+More aliases:
 ```javascript
 const {setup, joinTogglers, ON, OFF, RETURN_TOGGLER, dummy, bind, mouseovers} = toatie;
 ```
