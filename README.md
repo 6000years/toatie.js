@@ -32,20 +32,20 @@ document.body.append(click(elmnt, handler));
 Togglers make add/removeEventListener() easy:
 ```javascript
 const myToggler = click.toggler()(elmnt, handler);
-myToggler.off();    // elmnt.removeEventListener('click', handler)
-                    // (and toatie remembers {capture: true}, if you set it)
-myToggler.on();     // elmnt.addEventListener('click', handler)
-myToggler.toggle(); // flip state, call removeEventListener() again
-myToggler.toggle(ON); // calls addEventListener() -- .toggle(true|false|ON|OFF)
-myToggler.run?.()   // runs handler directly (not as a result of a user event firing)
+myToggler.off()      // elmnt.removeEventListener('click', handler)
+                     // (and toatie remembers {capture: true}, if you set it)
+myToggler.on()       // elmnt.addEventListener('click', handler)
+myToggler.toggle()   // flip state, call removeEventListener() again
+myToggler.toggle(ON) // calls addEventListener() -- .toggle(true|false|ON|OFF)
+myToggler.run?.()    // runs handler directly (not as a result of a user event firing)
 myToggler.off()
-myToggler.run?.()   // undefined, does nothing because toggler is in the off state
-myToggler.handler() // runs the handler (never undefined)
+myToggler.run?.()    // undefined, does nothing because toggler is in the off state
+myToggler.handler()  // runs the handler (never undefined)
 
 // you can pass in a toggler object of your own:
-const myToggler = { myproperty: 'whatever' }; // alternatively toatie.dummy() gives a do-nothing toggler
-click.toggler(myToggler)(elmnt, handler);     // returns elmnt
-console.log(myToggler.myproperty);            // intact, logs 'whatever'
+const myToggler = { myproperty: 'whatever' } // alternatively toatie.dummy() gives a do-nothing toggler
+click.toggler(myToggler)(elmnt, handler)     // returns elmnt not toggler
+console.log(myToggler.myproperty)            // intact, logs 'whatever'
 ```
 
 More aliases:
