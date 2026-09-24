@@ -15,7 +15,7 @@ const toatie = {
 ((
   {RETURN_TOGGLER, ON, OFF} = toatie,
   PRIVATE_SYMBOL = Symbol('PRIVATE_SYMBOL'),
-  opts = {NOTYET: Symbol('NOTYET'), BIND_ELEMENT_TO_HANDLERS: Symbol('BIND_ELEMENT_TO_HANDLERS'), TOGGLER: Symbol('TOGGLER'), USE_ELEMENT: Symbol('USE_ELEMENT')},
+  opts = {NOTYET: Symbol('NOTYET'), BIND_ELEMENT_TO_HANDLERS: Symbol('BIND_ELEMENT_TO_HANDLERS'), TOGGLER: Symbol('TOGGLER'), USE_ELEMENT: Symbol('USE_ELEMENT'), ONCE: Symbol('ONCE')},
   NO_TOGGLER = Symbol('NO_TOGGLER'),
   join_togglers = (joinedToggler, ...togglers) => (
     ((joinedToggler === RETURN_TOGGLER) && (joinedToggler = {})),
@@ -39,6 +39,7 @@ const toatie = {
     ) => (
       (joinedToggler.flipTo1st = flipTo1st),
       (joinedToggler.flipTo2nd = flipTo2nd),
+      // TODO accept an optional arg like .toggle(ON|OFF|true|false)
       (joinedToggler.flip = () => flip1())
     ))(),
     togglers.forEach((n, ind) => (
@@ -61,21 +62,24 @@ const toatie = {
       )
         || console.trace(`toggle_object must be either an Object or NO_TOGGLER or toatie.RETURN_TOGGLER`)
       ),
-      // do_not_be_tempted_to_inline_this_-_toggle_object_gets_reassigned_so_you_can't_reliably_run_this_test_later_on
-      ((want_toggler_return = (toggle_object === RETURN_TOGGLER)) => (
+      ((
+        // do_not_be_tempted_to_inline_this_-_toggle_object_gets_reassigned_so_you_can't_reliably_run_this_test_later_on
+        want_toggler_return = (toggle_object === RETURN_TOGGLER),
+        effective_ael_options = he_flags[opts.ONCE] ? Object.assign(aELOptions || {}, {once: true}) : aELOptions
+      ) => (
         ((toggle_object === NO_TOGGLER)
           ? (toggle_object = null)
           : (
             ((toggle_object === RETURN_TOGGLER) && (toggle_object = {})),
             ((
               on1 = () => (
-                elmnt.addEventListener(event_type, bound_handler, aELOptions),
+                elmnt.addEventListener(event_type, bound_handler, effective_ael_options),
                 (toggle_object && (toggle_object.run = bound_handler)),
                 handler.onCb?.(),
                 toggle_object
               ),
               off1 = () => (
-                elmnt.removeEventListener(event_type, bound_handler, aELOptions),
+                elmnt.removeEventListener(event_type, bound_handler, effective_ael_options),
                 (toggle_object && (toggle_object.run = null)),
                 handler.offCb?.(),
                 toggle_object
@@ -95,7 +99,7 @@ const toatie = {
             ))()
           )
         ),
-        ((initial_state === ON) && (elmnt.addEventListener(event_type, bound_handler, aELOptions), handler.onCb?.())),
+        ((initial_state === ON) && (elmnt.addEventListener(event_type, bound_handler, effective_ael_options), handler.onCb?.())),
         (want_toggler_return ? toggle_object : elmnt)
       ))()
     ))()
@@ -104,12 +108,13 @@ const toatie = {
   (toatie.bindWithThis = (el1, thisref, ...handlers) => [el1, ...handlers.map(h => h.bind(thisref, el1))]),
   (toatie.bind = (el1, ...handlers) => [el1, ...handlers.map(h => h.bind(null, el1))]),
   // const click = toatie._setup('click');
-  // click(el, handler);                 // repeated use
-  // toatie._setup('click')(el, handler); // ad hoc use
-  // click.notyet(el, handler);
-  // click.toggler()(el, handler);
-  // click.toggler(my_toggler)(el, handler);
-  // click.options(_OFF, _RETURN_TOGGLER)(el, handler);   // for *combinations* of options
+  // click(el,_handler);                 // repeated use
+  // toatie._setup('click')(el,_handler); // ad hoc use
+  // click.once(el,_handler);
+  // click.notyet(el,_handler);
+  // click.toggler()(el,_handler);
+  // click.toggler(my_toggler)(el,_handler);
+  // click.options(_OFF, _RETURN_TOGGLER)(el,_handler);   // for *combinations* of options
   (toatie.setup = (...events) => (
     (events.length === 1)
     ? ((
@@ -117,20 +122,39 @@ const toatie = {
         ((
           terminal = (
             flags[opts.USE_ELEMENT]
-            ? (handler_1, ...args)           => handle_event(flags, event_type_1, flags[opts.USE_ELEMENT], handler_1, ...args)
-            :(element_1, handler_1, ...args) => handle_event(flags, event_type_1, element_1, handler_1, ...args)
+            ? (handler_1, ...args)            => handle_event(flags, event_type_1, flags[opts.USE_ELEMENT], handler_1, ...args)
+            : (element_1, handler_1, ...args) => (
+              (
+                handler_1
+                ? (
+                  // EventTarget_allows_for_XMLHttpRequest
+                  console.assert(element_1 && ((element_1 instanceof HTMLElement) || (element_1 instanceof HTMLDocument) || (element_1 instanceof EventTarget)), 'caller must supply one of HTMLElement|HTMLDocument|EventTarget as first argument'),
+                  handle_event(flags, event_type_1, element_1, handler_1, ...args)
+                )
+                : chain(event_type_1, {...flags, [opts.USE_ELEMENT]: element_1}, done)
+              )
+            )
+          ),
+          lazy_branch = (prop_name, build) => Object.defineProperty(
+            terminal,
+            prop_name,
+            {
+              configurable: true,
+              enumerable: true,
+              get: () => (
+                ((value = build()) => (
+                  Object.defineProperty(terminal, prop_name, {value, writable: true, configurable: true, enumerable: true}),
+                  value
+                ))()
+              )
+            }
           )
         ) => (
           (done.includes(opts.TOGGLER) || (terminal.toggler = (callers_toggle_object = RETURN_TOGGLER) => chain(event_type_1, {...flags, [opts.TOGGLER]: callers_toggle_object}, done.concat(opts.TOGGLER)))),
-          (done.includes(opts.NOTYET) || (terminal.notyet = chain(event_type_1, {...flags, [opts.NOTYET]: true}, done.concat(opts.NOTYET)))),
+          (done.includes(opts.ONCE) || lazy_branch('once', () => chain(event_type_1, {...flags, [opts.ONCE]: true}, done.concat(opts.ONCE)))),
+          (done.includes(opts.NOTYET) || lazy_branch('notyet', () => chain(event_type_1, {...flags, [opts.NOTYET]: true}, done.concat(opts.NOTYET)))),
           // would prefer to name it just 'bind' but that clashes with Function.bind()
-          (done.includes(opts.BIND_ELEMENT_TO_HANDLERS) || (terminal.ttbind = chain(event_type_1, {...flags, [opts.BIND_ELEMENT_TO_HANDLERS]: true}, done.concat(opts.BIND_ELEMENT_TO_HANDLERS)))),
-          (done.includes(opts.USE_ELEMENT) || (terminal.element =
-            use_this_element => (
-              console.assert(use_this_element && ((use_this_element instanceof HTMLElement) || (use_this_element instanceof HTMLDocument)), 'caller must supply one argument of type HTMLElement to setup().element()'),
-              chain(event_type_1, {[opts.USE_ELEMENT]: use_this_element}, done.concat(opts.USE_ELEMENT))
-            )
-          )),
+          (done.includes(opts.BIND_ELEMENT_TO_HANDLERS) || lazy_branch('ttbind', () => chain(event_type_1, {...flags, [opts.BIND_ELEMENT_TO_HANDLERS]: true}, done.concat(opts.BIND_ELEMENT_TO_HANDLERS)))),
           terminal
         ))()
       )
