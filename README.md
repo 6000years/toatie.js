@@ -93,7 +93,7 @@ mouseovers.ttbind(
 
 Some events are typically associated with a certain element, for instance mousemove works with `document`. Lock it in:
 ```javascript
-const mousemove = setup('mousemove').element(document);
+const mousemove = setup('mousemove')(document);
 mousemove(e => console.log('mouse moved'));
 ```
 
