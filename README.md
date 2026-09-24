@@ -37,7 +37,7 @@ myToggler.off()      // elmnt.removeEventListener('click', handler)
 myToggler.on()       // elmnt.addEventListener('click', handler)
 myToggler.toggle()   // flip state, call removeEventListener() again
 myToggler.toggle(ON) // calls addEventListener() -- .toggle(true|false|ON|OFF)
-myToggler.run?.()    // runs handler directly (not as a result of a user event firing)
+myToggler.run()      // runs handler directly (not as a result of a user event firing)
 myToggler.off()
 myToggler.run?.()    // undefined, does nothing because toggler is in the off state
 myToggler.handler()  // runs the handler (never undefined)
@@ -46,6 +46,10 @@ myToggler.handler()  // runs the handler (never undefined)
 const myToggler = { myproperty: 'whatever' } // alternatively toatie.dummy() gives a do-nothing toggler
 click.toggler(myToggler)(elmnt, handler)     // returns elmnt not toggler
 console.log(myToggler.myproperty)            // intact, logs 'whatever'
+
+// if you always want click() to return a toggler, and never the element:
+const click = setup('click').toggler();
+const myToggler = click(elmnt, handler)
 ```
 
 More aliases:
