@@ -37,10 +37,7 @@ myToggler.off()      // elmnt.removeEventListener('click', handler)
 myToggler.on()       // elmnt.addEventListener('click', handler)
 myToggler.toggle()   // flip state, call removeEventListener() again
 myToggler.toggle(ON) // calls addEventListener() -- .toggle(true|false|ON|OFF)
-myToggler.run()      // runs handler directly (not as a result of a user event firing)
-myToggler.off()
-myToggler.run?.()    // undefined, does nothing because toggler is in the off state
-myToggler.handler()  // runs the handler (never undefined)
+myToggler.handler()  // run the handler directly
 
 // you can pass in a toggler object of your own:
 const myToggler = { myproperty: 'whatever' } // alternatively toatie.dummy() gives a do-nothing toggler

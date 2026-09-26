@@ -65,6 +65,7 @@ const toatie = {
       ((
         // do_not_be_tempted_to_inline_this_-_toggle_object_gets_reassigned_so_you_can't_reliably_run_this_test_later_on
         want_toggler_return = (toggle_object === RETURN_TOGGLER),
+        state = initial_state,
         effective_ael_options = he_flags[opts.ONCE] ? Object.assign(aELOptions || {}, {once: true}) : aELOptions
       ) => (
         ((toggle_object === NO_TOGGLER)
@@ -74,13 +75,13 @@ const toatie = {
             ((
               on1 = () => (
                 elmnt.addEventListener(event_type, bound_handler, effective_ael_options),
-                (toggle_object && (toggle_object.run = bound_handler)),
+                (state = ON),
                 handler.onCb?.(),
                 toggle_object
               ),
               off1 = () => (
                 elmnt.removeEventListener(event_type, bound_handler, effective_ael_options),
-                (toggle_object && (toggle_object.run = null)),
+                (state = OFF),
                 handler.offCb?.(),
                 toggle_object
               )
@@ -91,11 +92,10 @@ const toatie = {
               (toggle_object.toggle = (on_or_off = PRIVATE_SYMBOL) => (
                 (
                   (on_or_off === PRIVATE_SYMBOL) // ie_caller_did_not_specify_an_arg
-                  ? ((toggle_object.run === null) ? on1() : off1())
+                  ? ((state === ON) ? off1() : on1())
                   : ((on_or_off === OFF) || (  ! on_or_off)) ? off1() : on1()
                 )
-              )),
-              (toggle_object.run = ((initial_state === OFF) ? null : bound_handler))
+              ))
             ))()
           )
         ),
@@ -135,6 +135,7 @@ const toatie = {
               )
             )
           ),
+          //_lazy_branch## allows a space optimisation; without it you get the full depth hierarchy of option functions, with it you only get one level at a time
           lazy_branch = (prop_name, build) => Object.defineProperty(
             terminal,
             prop_name,
