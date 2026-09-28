@@ -14,12 +14,10 @@ Open source except for the words `toatie` and `wee` which are the exclusive prop
 
 Simplest possible use (no benefits yet):
 ```javascript
-toatie.setup('click')(elmnt, handler); // same as elmnt.addEventListener('click', handler)
+// declare an alias for convenience
+const click = toatie.setup('click');
 
-// that was too wordy, so set up some aliases
-const {setup} = toatie;
-const click = setup('click');
-// typical expected use of toatie.js :
+// same as elmnt.addEventListener('click', handler)
 click(elmnt, handler);
 
 // pass addEventListener() options
