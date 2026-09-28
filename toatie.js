@@ -227,6 +227,5 @@ const toatie = {
   (toatie.joinTogglers = join_togglers.bind(null, null)),
   (toatie.joinTogglers.toggler = callerToggleObject => join_togglers.bind(null, callerToggleObject))
   ,(toatie.focusblur   = toatie.setup('focus', 'blur'))
-  ,(toatie.mouseovers  = toatie.setup('mouseover', 'mouseout'))
   ,(toatie.mouseenters = toatie.setup('mouseenter', 'mouseleave'))
 ))();

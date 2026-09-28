@@ -49,7 +49,7 @@ const myToggler = click(elmnt, handler)
 
 More aliases:
 ```javascript
-const {setup, joinTogglers, ON, OFF, RETURN_TOGGLER, dummy, bind, mouseovers} = toatie;
+const {setup, joinTogglers, ON, OFF, RETURN_TOGGLER, dummy, bind, mouseenters} = toatie;
 ```
 
 Set up an event listener and toggler without calling `addEventListener()` as yet:
@@ -77,12 +77,12 @@ elmnt = document.createElement(); // does not break the click handler
 
 Events sometimes come in pairs.  Here mouseover events turn the background colour red and mouseout events reset it:
 ```javascript
-mouseovers.ttbind(
+mouseenters.ttbind(
   elmnt,
   el => el.style.setProperty('background-color', 'red'),
   el => el.style.removeProperty('background-color')
 );
-// you can also write mouseovers(...bind(elmnt, handler1, handler2))
+// you can also write mouseenters(...bind(elmnt, handler1, handler2))
 // ( naming ttbind 'bind' would clash with Function.bind() )
 ```
 
@@ -104,7 +104,7 @@ keydownkeyup(
 
 Toggle both event handlers in one fell swoop:
 ```javascript
-const myDoubleToggler = mouseovers.toggler()(
+const myDoubleToggler = mouseenters.toggler()(
   elmnt,
   () => console.log('mouseover'),
   () => console.log('mouseout')
